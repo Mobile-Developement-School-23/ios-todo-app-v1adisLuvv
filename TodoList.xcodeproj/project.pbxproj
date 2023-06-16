@@ -16,6 +16,7 @@
 		21719C7D2A3D28550053166D /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C7C2A3D28550053166D /* TodoItem.swift */; };
 		21719C7F2A3D28E60053166D /* TodoItem+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C7E2A3D28E60053166D /* TodoItem+JSON.swift */; };
 		21719C812A3D29540053166D /* TodoItem+CSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C802A3D29540053166D /* TodoItem+CSV.swift */; };
+		21719C832A3D29A90053166D /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C822A3D29A90053166D /* FileCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		21719C7C2A3D28550053166D /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		21719C7E2A3D28E60053166D /* TodoItem+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItem+JSON.swift"; sourceTree = "<group>"; };
 		21719C802A3D29540053166D /* TodoItem+CSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItem+CSV.swift"; sourceTree = "<group>"; };
+		21719C822A3D29A90053166D /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 				21719C7C2A3D28550053166D /* TodoItem.swift */,
 				21719C7E2A3D28E60053166D /* TodoItem+JSON.swift */,
 				21719C802A3D29540053166D /* TodoItem+CSV.swift */,
+				21719C822A3D29A90053166D /* FileCache.swift */,
 			);
 			path = TodoList;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 			files = (
 				21719C6D2A3D26850053166D /* ViewController.swift in Sources */,
 				21719C7F2A3D28E60053166D /* TodoItem+JSON.swift in Sources */,
+				21719C832A3D29A90053166D /* FileCache.swift in Sources */,
 				21719C692A3D26850053166D /* AppDelegate.swift in Sources */,
 				21719C7D2A3D28550053166D /* TodoItem.swift in Sources */,
 				21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */,
