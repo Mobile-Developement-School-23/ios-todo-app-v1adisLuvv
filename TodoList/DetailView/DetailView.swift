@@ -18,7 +18,7 @@ final class DetailView: UIView {
     // MARK: - UI Elements
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1.0)
+        scrollView.backgroundColor = ColorScheme.detailPrimaryBackground
         scrollView.isScrollEnabled = true
         scrollView.bounces = true
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -28,7 +28,7 @@ final class DetailView: UIView {
     
     private lazy var contentView: UIView = {
         let contentView = UIView()
-        contentView.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1.0)
+        contentView.backgroundColor = ColorScheme.detailPrimaryBackground
         contentView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentView)
         return contentView
@@ -37,9 +37,9 @@ final class DetailView: UIView {
     private lazy var taskTextView: UITextView = {
         let textView = UITextView()
         textView.text = "What to do?"
-        textView.textColor = .black.withAlphaComponent(0.3)
+        textView.textColor = ColorScheme.tertiaryLabel
         textView.font = .systemFont(ofSize: 17)
-        textView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        textView.backgroundColor = ColorScheme.secondaryBackground
         textView.layer.cornerRadius = 16
         textView.textContainerInset = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         textView.isScrollEnabled = false
@@ -54,7 +54,7 @@ final class DetailView: UIView {
         tableView.layer.cornerRadius = 16
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.register(PriorityTableViewCell.self, forCellReuseIdentifier: PriorityTableViewCell.identifier)
-//        tableView.register(PriorityTableViewCell.self, forCellReuseIdentifier: PriorityTableViewCell.identifier)
+        tableView.register(DeadlineTableViewCell.self, forCellReuseIdentifier: DeadlineTableViewCell.identifier)
 //        tableView.register(PriorityTableViewCell.self, forCellReuseIdentifier: PriorityTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
@@ -67,8 +67,8 @@ final class DetailView: UIView {
         var config = UIButton.Configuration.filled()
         config.title = "Remove"
         config.background.cornerRadius = 16
-        config.baseForegroundColor = UIColor(red: 1.0, green: 0.27, blue: 0.23, alpha: 1.0)
-        config.baseBackgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        config.baseForegroundColor = ColorScheme.red
+        config.baseBackgroundColor = ColorScheme.secondaryBackground
         let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(button)
@@ -124,7 +124,7 @@ final class DetailView: UIView {
 
 extension DetailView: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == .black.withAlphaComponent(0.3) {
+        if textView.textColor == ColorScheme.primaryLabel {
             textView.text = nil
             textView.textColor = .black
         }
@@ -133,7 +133,7 @@ extension DetailView: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.text = "What to do?"
-            textView.textColor = .black.withAlphaComponent(0.3)
+            textView.textColor = ColorScheme.tertiaryLabel
         }
     }
 }
@@ -153,9 +153,9 @@ extension DetailView: UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: PriorityTableViewCell.identifier, for: indexPath) as? PriorityTableViewCell else { return UITableViewCell() }
             
-            
-            
-            
+            return cell
+        } else if indexPath.row == 1 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: DeadlineTableViewCell.identifier, for: indexPath) as? DeadlineTableViewCell else { return UITableViewCell() }
             
             return cell
         }
