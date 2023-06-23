@@ -12,6 +12,12 @@ final class CalendarTableViewCell: UITableViewCell {
 
     static let identifier = "CalendarTableViewCell"
     
+    weak var delegate: UICalendarSelectionSingleDateDelegate? {
+        didSet {
+            calendar.selectionBehavior = UICalendarSelectionSingleDate(delegate: delegate)
+        }
+    }
+    
     // MARK: - UI Elements
     private lazy var calendar: UICalendarView = {
         let calendarView = UICalendarView()
@@ -20,7 +26,6 @@ final class CalendarTableViewCell: UITableViewCell {
         calendarView.timeZone = .current
         calendarView.fontDesign = .rounded
         calendarView.availableDateRange = DateInterval(start: .now, end: .distantFuture)
-        calendarView.selectionBehavior = UICalendarSelectionSingleDate(delegate: self)
         calendarView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(calendarView)
         return calendarView
@@ -46,13 +51,5 @@ final class CalendarTableViewCell: UITableViewCell {
             make.bottom.equalToSuperview()
         }
         
-    }
-}
-
-extension CalendarTableViewCell: UICalendarSelectionSingleDateDelegate {
-    func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        if let dateComponents = dateComponents, let date = Calendar.current.date(from: dateComponents) {
-            DetailView.deadline = date
-        }
     }
 }

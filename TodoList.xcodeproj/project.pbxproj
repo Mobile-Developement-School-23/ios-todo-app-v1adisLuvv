@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E0C2A4504F2006D1D4F /* ColorScheme.swift */; };
 		21575E0F2A451BE0006D1D4F /* Symbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E0E2A451BDF006D1D4F /* Symbols.swift */; };
+		21575E112A4627E3006D1D4F /* DidChangePriorityDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E102A4627E3006D1D4F /* DidChangePriorityDelegate.swift */; };
+		21575E132A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E122A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift */; };
 		21719C692A3D26850053166D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C682A3D26850053166D /* AppDelegate.swift */; };
 		21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C6A2A3D26850053166D /* SceneDelegate.swift */; };
 		21719C6D2A3D26850053166D /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C6C2A3D26850053166D /* DetailViewController.swift */; };
@@ -42,6 +44,8 @@
 /* Begin PBXFileReference section */
 		21575E0C2A4504F2006D1D4F /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
 		21575E0E2A451BDF006D1D4F /* Symbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbols.swift; sourceTree = "<group>"; };
+		21575E102A4627E3006D1D4F /* DidChangePriorityDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DidChangePriorityDelegate.swift; sourceTree = "<group>"; };
+		21575E122A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DidToggleDeadlineSwitchDelegate.swift; sourceTree = "<group>"; };
 		21719C652A3D26850053166D /* TodoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21719C682A3D26850053166D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		21719C6A2A3D26850053166D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -171,6 +175,8 @@
 				21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */,
 				21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */,
 				21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */,
+				21575E102A4627E3006D1D4F /* DidChangePriorityDelegate.swift */,
+				21575E122A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift */,
 			);
 			path = DetailView;
 			sourceTree = "<group>";
@@ -285,7 +291,9 @@
 				21719C6D2A3D26850053166D /* DetailViewController.swift in Sources */,
 				21B845842A410DC0007531DB /* DetailView.swift in Sources */,
 				21719C7F2A3D28E60053166D /* TodoItem+JSON.swift in Sources */,
+				21575E132A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift in Sources */,
 				21719C832A3D29A90053166D /* FileCache.swift in Sources */,
+				21575E112A4627E3006D1D4F /* DidChangePriorityDelegate.swift in Sources */,
 				21B845862A410DE5007531DB /* DetailViewControllerProtocol.swift in Sources */,
 				21719C692A3D26850053166D /* AppDelegate.swift in Sources */,
 				21719C7D2A3D28550053166D /* TodoItem.swift in Sources */,

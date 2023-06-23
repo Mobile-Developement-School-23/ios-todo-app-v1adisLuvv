@@ -12,6 +12,8 @@ final class PriorityTableViewCell: UITableViewCell {
     
     static let identifier = "PriorityTableViewCell"
     
+    weak var delegate: DidChangePriorityDelegate?
+    
     // MARK: - UI Elements
     private lazy var priorityLabel: UILabel = {
         let label = UILabel()
@@ -68,15 +70,6 @@ final class PriorityTableViewCell: UITableViewCell {
     }
     
     @objc private func didChangePriority() {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            DetailView.priority = .low
-        case 1:
-            DetailView.priority = .regular
-        case 2:
-            DetailView.priority = .high
-        default:
-            break
-        }
+        delegate?.didChangePriority(selectedIndex: segmentedControl.selectedSegmentIndex)
     }
 }

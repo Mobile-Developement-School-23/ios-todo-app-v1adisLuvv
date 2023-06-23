@@ -12,6 +12,8 @@ final class DeadlineTableViewCell: UITableViewCell {
 
     static let identifier = "DeadlineTableViewCell"
     
+    weak var delegate: DidToggleDeadlineSwitchDelegate?
+    
     // MARK: - UI Elements
     private lazy var doUntillabel: UILabel = {
         let label = UILabel()
@@ -41,7 +43,6 @@ final class DeadlineTableViewCell: UITableViewCell {
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         stack.addArrangedSubview(doUntillabel)
-        stack.addArrangedSubview(deadlineLabel)
         
         addSubview(stack)
         return stack
@@ -49,7 +50,6 @@ final class DeadlineTableViewCell: UITableViewCell {
     
     private lazy var deadlineSwitch: UISwitch = {
         let sw = UISwitch()
-        sw.isOn = false
         sw.onTintColor = ColorScheme.green
         sw.addTarget(self, action: #selector(didTapDeadlineSwitch), for: .valueChanged)
         return sw
@@ -92,26 +92,22 @@ final class DeadlineTableViewCell: UITableViewCell {
     }
     
     @objc private func didTapDeadlineSwitch() {
-        guard let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date()) else { return }
-        configureDeadline(withDate: tomorrow)
+        delegate?.didToggleDeadlineSwitch(isOn: deadlineSwitch.isOn)
     }
     
-    func configureDeadline(withDate date: Date) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMMM yyyy"
-        
-        let dateString = dateFormatter.string(from: date)
-        
-        deadlineLabel.text = dateString
-        deadlineLabel.isHidden = !deadlineSwitch.isOn
-        
-        labelsStackView.removeArrangedSubview(deadlineLabel)
-        
-        if deadlineSwitch.isOn {
+    func configureDeadline(withDate date: Date?) {
+        if let date = date {
+            deadlineSwitch.setOn(true, animated: false)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd MMMM yyyy"
+            let dateString = dateFormatter.string(from: date)
+            deadlineLabel.text = dateString
             labelsStackView.addArrangedSubview(deadlineLabel)
+            layoutIfNeeded()
+        } else {
+            deadlineSwitch.setOn(false, animated: false)
+            deadlineLabel.removeFromSuperview()
+            layoutIfNeeded()
         }
-        
-        layoutIfNeeded()
-        
     }
 }

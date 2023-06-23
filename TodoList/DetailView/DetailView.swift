@@ -11,9 +11,13 @@ import SnapKit
 final class DetailView: UIView {
     
     // MARK: - Variables
-    static var text: String? = ""
-    static var priority: Priority = .regular
-    static var deadline: Date? = Date()
+    var text: String?
+    var priority: Priority = .regular
+    var deadline: Date? {
+        didSet {
+            tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+        }
+    }
     
     
     private var showCalendar = false
@@ -132,9 +136,9 @@ final class DetailView: UIView {
 
 extension DetailView: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == ColorScheme.primaryLabel {
+        if textView.textColor == ColorScheme.tertiaryLabel {
             textView.text = nil
-            textView.textColor = .black
+            textView.textColor = ColorScheme.primaryLabel
         }
     }
     
@@ -143,6 +147,10 @@ extension DetailView: UITextViewDelegate {
             textView.text = "What to do?"
             textView.textColor = ColorScheme.tertiaryLabel
         }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        text = textView.text
     }
 }
 
@@ -168,7 +176,10 @@ extension DetailView: UITableViewDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if isVisible {
+                self.tableView.beginUpdates()
                 self.tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+                self.tableView.endUpdates()
+                self.tableView.reloadData()
             }
         }
         
@@ -210,13 +221,20 @@ extension DetailView: UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: PriorityTableViewCell.identifier, for: indexPath) as? PriorityTableViewCell else { return UITableViewCell() }
             
+            cell.delegate = self
+            
             return cell
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: DeadlineTableViewCell.identifier, for: indexPath) as? DeadlineTableViewCell else { return UITableViewCell() }
             
+            cell.delegate = self
+            cell.configureDeadline(withDate: deadline)
+            
             return cell
         } else if indexPath.row == 2 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarTableViewCell.identifier, for: indexPath) as? CalendarTableViewCell else { return UITableViewCell() }
+            
+            cell.delegate = self
             
             return cell
         }
@@ -225,3 +243,36 @@ extension DetailView: UITableViewDataSource {
     }
 }
 
+extension DetailView: UICalendarSelectionSingleDateDelegate {
+    func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
+        if let dateComponents = dateComponents, let date = Calendar.current.date(from: dateComponents) {
+            deadline = date
+        }
+    }
+}
+
+extension DetailView: DidChangePriorityDelegate {
+    func didChangePriority(selectedIndex: Int) {
+        switch selectedIndex {
+        case 0:
+            priority = .low
+        case 1:
+            priority = .regular
+        case 2:
+            priority = .high
+        default:
+            break
+        }
+        print(priority)
+    }
+}
+
+extension DetailView: DidToggleDeadlineSwitchDelegate {
+    func didToggleDeadlineSwitch(isOn: Bool) {
+        if isOn {
+            deadline = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+        } else {
+            deadline = nil
+        }
+    }
+}
