@@ -13,7 +13,7 @@ final class PriorityTableViewCell: UITableViewCell {
     static let identifier = "PriorityTableViewCell"
     
     // MARK: - UI Elements
-    private lazy var doUntillabel: UILabel = {
+    private lazy var priorityLabel: UILabel = {
         let label = UILabel()
         label.text = "Priority"
         label.textColor = ColorScheme.primaryLabel
@@ -23,32 +23,11 @@ final class PriorityTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var deadlineLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .left
-        label.font = .systemFont(ofSize: 15)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var labelsStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.alignment = .leading
-        stack.spacing = 8
-        stack.distribution = .fillEqually
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        
-        stack.addArrangedSubview(doUntillabel)
-        
-        addSubview(stack)
-        return stack
-    }()
-    
     private lazy var segmentedControl: UISegmentedControl = {
         let items: [Any] = [Symbols.arrowDownSymbol, "no", Symbols.doubleExclamationMarkSymbol]
         let segControl = UISegmentedControl(items: items)
         segControl.selectedSegmentIndex = 1
+        segControl.addTarget(self, action: #selector(didChangePriority), for: .valueChanged)
         return segControl
     }()
     
@@ -59,7 +38,7 @@ final class PriorityTableViewCell: UITableViewCell {
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         
-        stack.addArrangedSubview(labelsStackView)
+        stack.addArrangedSubview(priorityLabel)
         stack.addArrangedSubview(segmentedControl)
         
         contentView.addSubview(stack)
@@ -88,19 +67,16 @@ final class PriorityTableViewCell: UITableViewCell {
         
     }
     
-    func configureDeadline(withDate date: String, isDeadlineActivated: Bool) {
-        deadlineLabel.text = "24 June 2023"
-        deadlineLabel.isHidden = !isDeadlineActivated
-        
-        labelsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
-        labelsStackView.addArrangedSubview(doUntillabel)
-        
-        if isDeadlineActivated {
-            labelsStackView.addArrangedSubview(deadlineLabel)
+    @objc private func didChangePriority() {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            DetailView.priority = .low
+        case 1:
+            DetailView.priority = .regular
+        case 2:
+            DetailView.priority = .high
+        default:
+            break
         }
-        
-        #warning("finish configuring the cell with deadline")
     }
-    
 }

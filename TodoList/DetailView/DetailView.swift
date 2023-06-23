@@ -9,6 +9,14 @@ import UIKit
 import SnapKit
 
 final class DetailView: UIView {
+    
+    // MARK: - Variables
+    static var text: String? = ""
+    static var priority: Priority = .regular
+    static var deadline: Date? = Date()
+    
+    
+    private var showCalendar = false
 
     // MARK: - Constants
     private struct Constants {
@@ -55,7 +63,7 @@ final class DetailView: UIView {
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.register(PriorityTableViewCell.self, forCellReuseIdentifier: PriorityTableViewCell.identifier)
         tableView.register(DeadlineTableViewCell.self, forCellReuseIdentifier: DeadlineTableViewCell.identifier)
-//        tableView.register(PriorityTableViewCell.self, forCellReuseIdentifier: PriorityTableViewCell.identifier)
+        tableView.register(CalendarTableViewCell.self, forCellReuseIdentifier: CalendarTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +86,7 @@ final class DetailView: UIView {
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1.0)
+        backgroundColor = ColorScheme.detailPrimaryBackground
         
         setupConstraints()
     }
@@ -140,13 +148,62 @@ extension DetailView: UITextViewDelegate {
 
 extension DetailView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 56
+        if indexPath.row == 2 {
+            return 332
+        } else {
+            return 56
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 1 {
+            showCalendar.toggle()
+            calendarAnimation(isVisible: showCalendar)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    private func calendarAnimation(isVisible: Bool) {
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if isVisible {
+                self.tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+            }
+        }
+        
+        UIView.animate(withDuration: 1.0, animations: { [weak self] in
+            guard let self = self else { return }
+            if isVisible {
+                self.tableView.snp.updateConstraints { make in
+                    make.height.equalTo(56 * 2 - 1 + 332)
+                }
+                
+                self.layoutIfNeeded()
+            } else {
+                self.tableView.snp.updateConstraints { make in
+                    make.height.equalTo(56 * 2 - 1)
+                }
+                
+                self.layoutIfNeeded()
+            }
+        }) { [weak self] _ in
+            guard let self = self else { return }
+            if !isVisible {
+                DispatchQueue.main.async {
+                    self.tableView.beginUpdates()
+                    self.tableView.deleteRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+                    self.tableView.endUpdates()
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
 }
 
 extension DetailView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return showCalendar ? 3 : 2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -156,6 +213,10 @@ extension DetailView: UITableViewDataSource {
             return cell
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: DeadlineTableViewCell.identifier, for: indexPath) as? DeadlineTableViewCell else { return UITableViewCell() }
+            
+            return cell
+        } else if indexPath.row == 2 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarTableViewCell.identifier, for: indexPath) as? CalendarTableViewCell else { return UITableViewCell() }
             
             return cell
         }
