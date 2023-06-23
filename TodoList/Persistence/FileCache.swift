@@ -8,6 +8,10 @@
 import Foundation
 
 final class FileCache {
+    
+    static let shared = FileCache()
+    private init() {}
+    
     private(set) var todoItems: [TodoItem] = []
     
     func addTask(_ item: TodoItem) {

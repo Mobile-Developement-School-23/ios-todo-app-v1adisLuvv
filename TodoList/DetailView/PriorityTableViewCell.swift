@@ -28,7 +28,6 @@ final class PriorityTableViewCell: UITableViewCell {
     private lazy var segmentedControl: UISegmentedControl = {
         let items: [Any] = [Symbols.arrowDownSymbol, "no", Symbols.doubleExclamationMarkSymbol]
         let segControl = UISegmentedControl(items: items)
-        segControl.selectedSegmentIndex = 1
         segControl.addTarget(self, action: #selector(didChangePriority), for: .valueChanged)
         return segControl
     }()
@@ -51,6 +50,8 @@ final class PriorityTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        backgroundColor = ColorScheme.secondaryBackground
+        
         setupConstraints()
     }
     
@@ -71,5 +72,16 @@ final class PriorityTableViewCell: UITableViewCell {
     
     @objc private func didChangePriority() {
         delegate?.didChangePriority(selectedIndex: segmentedControl.selectedSegmentIndex)
+    }
+    
+    func configurePriority(withPriority priority: Priority) {
+        switch priority {
+        case .low:
+            segmentedControl.selectedSegmentIndex = 0
+        case .regular:
+            segmentedControl.selectedSegmentIndex = 1
+        case .high:
+            segmentedControl.selectedSegmentIndex = 2
+        }
     }
 }
