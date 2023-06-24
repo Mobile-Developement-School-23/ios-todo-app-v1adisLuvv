@@ -11,22 +11,22 @@ import SnapKit
 final class DetailView: UIView {
     
     // MARK: - Variables
-    let fileName = "firstTodoItem"
-    var id: String?
-    var text: String?
-    var priority: Priority = .regular
-    var deadline: Date? {
+    private let fileName = "firstTodoItem" // file where the TodoItem will be written
+    
+    private var id: String?
+    private var text: String?
+    private var priority: Priority = .regular
+    private var deadline: Date? {
         didSet {
             tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
         }
     }
     
-    
     private var showCalendar = false
 
     // MARK: - Constants
     private struct Constants {
-        // some costants
+        // layout constants will be added here later...
     }
     
     // MARK: - UI Elements
@@ -40,7 +40,7 @@ final class DetailView: UIView {
         return scrollView
     }()
     
-    private lazy var contentView: UIView = {
+    private lazy var contentView: UIView = { // the UIView stretched all over the scrollView
         let contentView = UIView()
         contentView.backgroundColor = ColorScheme.detailPrimaryBackground
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +92,6 @@ final class DetailView: UIView {
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = ColorScheme.detailPrimaryBackground
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         return navigationBar
     }()
@@ -127,17 +126,21 @@ final class DetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - setupNavigationBar
     private func setupNavigationBar() {
         let navigationItem = UINavigationItem()
         
         navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
         
+        navigationBar.barTintColor = ColorScheme.detailPrimaryBackground
+        
         navigationBar.setItems([navigationItem], animated: false)
         
         addSubview(navigationBar)
     }
     
+    // MARK: - loadTodoItem
     private func loadTodoItem() {
         let fileCache = FileCache.shared
         fileCache.loadJSONFromFile(fileName: fileName)
@@ -188,6 +191,7 @@ final class DetailView: UIView {
         }
     }
     
+    // MARK: - UI Interactions handling
     @objc private func didTapCancelButton() {
         taskTextView.text = "What to do?"
         taskTextView.textColor = ColorScheme.tertiaryLabel
@@ -208,25 +212,7 @@ final class DetailView: UIView {
 
 }
 
-private extension DetailView {
-    
-    @objc func keyboardWillShow(notification: Notification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            scrollView.snp.updateConstraints { make in
-                make.bottom.equalTo(safeAreaLayoutGuide).offset(-keyboardSize.height + safeAreaInsets.bottom)
-            }
-        }
-    }
-    
-    @objc func keyboardWillHide(notification: Notification) {
-        if let _ = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            scrollView.snp.updateConstraints { make in
-                make.bottom.equalTo(safeAreaLayoutGuide)
-            }
-        }
-    }
-}
-
+// MARK: - UITextViewDelegate extension
 extension DetailView: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == ColorScheme.tertiaryLabel {
@@ -248,10 +234,12 @@ extension DetailView: UITextViewDelegate {
     }
 }
 
+// MARK: - UITableViewDelegate extension
 extension DetailView: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 2 {
-            return 332
+            return 332 // the row for the calendar
         } else {
             return 56
         }
@@ -277,7 +265,7 @@ extension DetailView: UITableViewDelegate {
             }
         }
         
-        UIView.animate(withDuration: 1.0, animations: { [weak self] in
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             if isVisible {
                 self.tableView.snp.updateConstraints { make in
@@ -306,7 +294,9 @@ extension DetailView: UITableViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource extension
 extension DetailView: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return showCalendar ? 3 : 2
     }
@@ -338,6 +328,8 @@ extension DetailView: UITableViewDataSource {
     }
 }
 
+
+// MARK: - TableView cell delegates
 extension DetailView: UICalendarSelectionSingleDateDelegate {
     func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
         if let dateComponents = dateComponents, let date = Calendar.current.date(from: dateComponents) {
@@ -367,6 +359,27 @@ extension DetailView: DidToggleDeadlineSwitchDelegate {
             deadline = Calendar.current.date(byAdding: .day, value: 1, to: Date())
         } else {
             deadline = nil
+        }
+    }
+}
+
+
+// MARK: - Keyboard extension
+extension DetailView {
+    
+    @objc func keyboardWillShow(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            scrollView.snp.updateConstraints { make in
+                make.bottom.equalTo(safeAreaLayoutGuide).offset(-keyboardSize.height + safeAreaInsets.bottom)
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(notification: Notification) {
+        if let _ = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            scrollView.snp.updateConstraints { make in
+                make.bottom.equalTo(safeAreaLayoutGuide)
+            }
         }
     }
 }

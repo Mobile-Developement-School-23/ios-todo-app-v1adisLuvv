@@ -8,8 +8,10 @@
 import Foundation
 import UIKit
 
+// custom color scheme from assets
 struct ColorScheme {
     
+    // this colors 100% exists because i set the names so we can use force unwrap
     static let mainPrimaryBackground = UIColor(named: "MainPrimaryBackground")!
     static let detailPrimaryBackground = UIColor(named: "DetailPrimaryBackground")!
     static let secondaryBackground = UIColor(named: "SecondaryBackground")!

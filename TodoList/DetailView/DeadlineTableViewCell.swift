@@ -101,6 +101,7 @@ final class DeadlineTableViewCell: UITableViewCell {
         if let date = date {
             deadlineSwitch.setOn(true, animated: false)
             let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "en_US")
             dateFormatter.dateFormat = "dd MMMM yyyy"
             let dateString = dateFormatter.string(from: date)
             deadlineLabel.text = dateString
