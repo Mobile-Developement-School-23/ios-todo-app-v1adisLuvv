@@ -85,6 +85,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2128192C2A4B5AF900B9DBF5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				21575E0C2A4504F2006D1D4F /* ColorScheme.swift */,
+				21575E0E2A451BDF006D1D4F /* Symbols.swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		21719C5C2A3D26850053166D = {
 			isa = PBXGroup;
 			children = (
@@ -106,13 +115,12 @@
 		21719C672A3D26850053166D /* TodoList */ = {
 			isa = PBXGroup;
 			children = (
-				21575E0C2A4504F2006D1D4F /* ColorScheme.swift */,
-				21575E0E2A451BDF006D1D4F /* Symbols.swift */,
 				21B845882A410E21007531DB /* DetailView */,
 				21B845872A410E12007531DB /* DetailViewController */,
-				21B8457D2A410C77007531DB /* TodoItem Model */,
+				21B8457D2A410C77007531DB /* TodoItemModel */,
 				21B8457E2A410C97007531DB /* Persistence */,
-				21B8457F2A410CAF007531DB /* Supporting Files */,
+				2128192C2A4B5AF900B9DBF5 /* Resources */,
+				21B8457F2A410CAF007531DB /* SupportingFiles */,
 			);
 			path = TodoList;
 			sourceTree = "<group>";
@@ -127,14 +135,14 @@
 			path = TodoListTests;
 			sourceTree = "<group>";
 		};
-		21B8457D2A410C77007531DB /* TodoItem Model */ = {
+		21B8457D2A410C77007531DB /* TodoItemModel */ = {
 			isa = PBXGroup;
 			children = (
 				21719C7C2A3D28550053166D /* TodoItem.swift */,
 				21719C7E2A3D28E60053166D /* TodoItem+JSON.swift */,
 				21719C802A3D29540053166D /* TodoItem+CSV.swift */,
 			);
-			path = "TodoItem Model";
+			path = TodoItemModel;
 			sourceTree = "<group>";
 		};
 		21B8457E2A410C97007531DB /* Persistence */ = {
@@ -145,7 +153,7 @@
 			path = Persistence;
 			sourceTree = "<group>";
 		};
-		21B8457F2A410CAF007531DB /* Supporting Files */ = {
+		21B8457F2A410CAF007531DB /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
 				21719C682A3D26850053166D /* AppDelegate.swift */,
@@ -154,7 +162,7 @@
 				21719C732A3D26860053166D /* LaunchScreen.storyboard */,
 				21719C762A3D26860053166D /* Info.plist */,
 			);
-			path = "Supporting Files";
+			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 		21B845872A410E12007531DB /* DetailViewController */ = {

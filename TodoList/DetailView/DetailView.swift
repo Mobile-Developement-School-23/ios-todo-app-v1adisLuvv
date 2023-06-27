@@ -70,6 +70,7 @@ final class DetailView: UIView {
         tableView.register(PriorityTableViewCell.self, forCellReuseIdentifier: PriorityTableViewCell.identifier)
         tableView.register(DeadlineTableViewCell.self, forCellReuseIdentifier: DeadlineTableViewCell.identifier)
         tableView.register(CalendarTableViewCell.self, forCellReuseIdentifier: CalendarTableViewCell.identifier)
+        tableView.isScrollEnabled = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
