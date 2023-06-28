@@ -20,4 +20,24 @@ struct Symbols {
     
     static let doubleExclamationMarkSymbol = UIImage(systemName: "exclamationmark.2", withConfiguration: doubleExclamationMarkSymbolConfig)!.withTintColor(ColorScheme.red, renderingMode: .alwaysOriginal)
     
+    
+    
+    
+    private static let regularTaskButtonSymbolConfig = UIImage.SymbolConfiguration(weight: .regular)
+    
+    static let regularTaskButtonSymbol = UIImage(systemName: "circle", withConfiguration: regularTaskButtonSymbolConfig)!.withTintColor(ColorScheme.lightGray, renderingMode: .alwaysOriginal)
+    
+    private static let highPriorityTaskButtonSymbolConfig = UIImage.SymbolConfiguration(weight: .regular)
+    
+    static let highPriorityTaskButtonSymbol = UIImage(systemName: "circle", withConfiguration: highPriorityTaskButtonSymbolConfig)!.withTintColor(ColorScheme.red, renderingMode: .alwaysOriginal)
+    
+    private static let checkedTaskButtonSymbolConfig = UIImage.SymbolConfiguration(weight: .bold)
+    
+    static let checkedTaskButtonSymbol = UIImage(systemName: "checkmark.circle.fill", withConfiguration: checkedTaskButtonSymbolConfig)!.withTintColor(ColorScheme.green, renderingMode: .alwaysOriginal)
+    
+    
+    
+    private static let tableViewDisclosureSymbolConfig = UIImage.SymbolConfiguration(weight: .medium)
+    
+    static let tableViewDisclosureSymbol = UIImage(systemName: "chevron.forward", withConfiguration: tableViewDisclosureSymbolConfig)!.withTintColor(ColorScheme.gray, renderingMode: .alwaysOriginal)
 }

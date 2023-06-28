@@ -306,6 +306,7 @@ extension DetailView: UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: PriorityTableViewCell.identifier, for: indexPath) as? PriorityTableViewCell else { return UITableViewCell() }
             
+            cell.selectionStyle = .none
             cell.delegate = self
             cell.configurePriority(withPriority: priority)
             
@@ -320,6 +321,7 @@ extension DetailView: UITableViewDataSource {
         } else if indexPath.row == 2 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarTableViewCell.identifier, for: indexPath) as? CalendarTableViewCell else { return UITableViewCell() }
             
+            cell.selectionStyle = .none
             cell.delegate = self
             
             return cell
