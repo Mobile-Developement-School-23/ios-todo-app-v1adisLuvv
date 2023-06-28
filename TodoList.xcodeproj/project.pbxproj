@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2128192E2A4B5BB100B9DBF5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */; };
+		212819302A4B5BF500B9DBF5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2128192F2A4B5BF500B9DBF5 /* MainView.swift */; };
+		212819322A4B71C300B9DBF5 /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */; };
+		212819342A4C762900B9DBF5 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212819332A4C762900B9DBF5 /* TableHeaderView.swift */; };
 		21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E0C2A4504F2006D1D4F /* ColorScheme.swift */; };
 		21575E0F2A451BE0006D1D4F /* Symbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E0E2A451BDF006D1D4F /* Symbols.swift */; };
 		21575E112A4627E3006D1D4F /* DidChangePriorityDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21575E102A4627E3006D1D4F /* DidChangePriorityDelegate.swift */; };
@@ -41,6 +45,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		2128192F2A4B5BF500B9DBF5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
+		212819332A4C762900B9DBF5 /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
 		21575E0C2A4504F2006D1D4F /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
 		21575E0E2A451BDF006D1D4F /* Symbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbols.swift; sourceTree = "<group>"; };
 		21575E102A4627E3006D1D4F /* DidChangePriorityDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DidChangePriorityDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +123,10 @@
 		21719C672A3D26850053166D /* TodoList */ = {
 			isa = PBXGroup;
 			children = (
+				2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */,
+				2128192F2A4B5BF500B9DBF5 /* MainView.swift */,
+				212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */,
+				212819332A4C762900B9DBF5 /* TableHeaderView.swift */,
 				21B845882A410E21007531DB /* DetailView */,
 				21B845872A410E12007531DB /* DetailViewController */,
 				21B8457D2A410C77007531DB /* TodoItemModel */,
@@ -295,18 +307,22 @@
 			files = (
 				21719C6D2A3D26850053166D /* DetailViewController.swift in Sources */,
 				21B845842A410DC0007531DB /* DetailView.swift in Sources */,
+				212819322A4B71C300B9DBF5 /* TaskTableViewCell.swift in Sources */,
 				21719C7F2A3D28E60053166D /* TodoItem+JSON.swift in Sources */,
 				21575E132A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift in Sources */,
 				21719C832A3D29A90053166D /* FileCache.swift in Sources */,
 				21575E112A4627E3006D1D4F /* DidChangePriorityDelegate.swift in Sources */,
 				21719C692A3D26850053166D /* AppDelegate.swift in Sources */,
+				2128192E2A4B5BB100B9DBF5 /* MainViewController.swift in Sources */,
 				21719C7D2A3D28550053166D /* TodoItem.swift in Sources */,
 				21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */,
 				21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */,
+				212819302A4B5BF500B9DBF5 /* MainView.swift in Sources */,
 				21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */,
 				21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */,
 				21719C812A3D29540053166D /* TodoItem+CSV.swift in Sources */,
 				21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */,
+				212819342A4C762900B9DBF5 /* TableHeaderView.swift in Sources */,
 				21575E0F2A451BE0006D1D4F /* Symbols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -465,7 +481,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "TodoList/Supporting Files/Info.plist";
+				INFOPLIST_FILE = TodoList/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -492,7 +508,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "TodoList/Supporting Files/Info.plist";
+				INFOPLIST_FILE = TodoList/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
