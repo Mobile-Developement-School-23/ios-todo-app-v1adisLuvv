@@ -14,11 +14,9 @@ final class MainView: UIView {
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.layer.cornerRadius = 16
+        let tableView = UITableView()
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16 + 28 + 12, bottom: 0, right: 0)
         tableView.register(TaskTableViewCell.self, forCellReuseIdentifier: TaskTableViewCell.identifier)
-        tableView.register(TableHeaderView.self, forHeaderFooterViewReuseIdentifier: TableHeaderView.identifier)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = ColorScheme.mainPrimaryBackground
@@ -47,9 +45,11 @@ final class MainView: UIView {
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = ColorScheme.detailPrimaryBackground
+        backgroundColor = ColorScheme.mainPrimaryBackground
         
         loadTodoItems()
+        createHeader()
+        createFooter()
         setupConstraints()
     }
     
@@ -57,12 +57,105 @@ final class MainView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func createHeader() {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40))
+        headerView.backgroundColor = ColorScheme.mainPrimaryBackground
+        
+        let completedLabel: UILabel = {
+            let label = UILabel()
+            label.text = "Completed - 0"
+            label.textColor = ColorScheme.tertiaryLabel
+            label.font = .systemFont(ofSize: 15)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            headerView.addSubview(label)
+            return label
+        }()
+        
+        let showHideButton: UIButton = {
+            let button = UIButton()
+            button.setTitle("Show", for: .normal)
+            button.setTitleColor(ColorScheme.blue, for: .normal)
+            button.titleLabel?.font = .boldSystemFont(ofSize: 15)
+    //        button.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            headerView.addSubview(button)
+            return button
+        }()
+        
+        completedLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.centerY.equalToSuperview()
+        }
+        
+        showHideButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-16)
+            make.centerY.equalToSuperview()
+        }
+        
+        tableView.tableHeaderView = headerView
+    }
+    
+    private func createFooter() {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 56 + 86))
+        footerView.backgroundColor = ColorScheme.mainPrimaryBackground
+        
+        let newLabel: UILabel = {
+            let label = UILabel()
+            label.text = "New"
+            label.textColor = ColorScheme.tertiaryLabel
+            label.textAlignment = .left
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            return label
+        }()
+        
+        let whiteView: UIView = {
+            let view = UIView()
+            view.backgroundColor = ColorScheme.secondaryBackground
+            view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            view.layer.cornerRadius = 16
+            // target
+            view.addSubview(newLabel)
+            footerView.addSubview(view)
+            view.translatesAutoresizingMaskIntoConstraints = false
+            return view
+        }()
+        
+        let clearView: UIView = {
+            let view = UIView()
+            view.backgroundColor = ColorScheme.mainPrimaryBackground
+            footerView.addSubview(view)
+            return view
+        }()
+        
+        
+        newLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16 + 28 + 12)
+            make.centerY.equalToSuperview()
+        }
+        
+        whiteView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalToSuperview()
+            make.height.equalTo(56)
+        }
+        
+        clearView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(whiteView.snp.bottom)
+            make.height.equalTo(86)
+        }
+        
+        
+        tableView.tableFooterView = footerView
+    }
+    
     // MARK: - setupConstraints
     private func setupConstraints() {
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide)
-            make.leading.trailing.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview()
         }
         
@@ -100,35 +193,11 @@ extension MainView: UITableViewDelegate {
             cell.layer.mask = shape
         } else {
             let maskPath = UIBezierPath(roundedRect: cell.bounds,
-                                        byRoundingCorners: [.topLeft, .topRight],
+                                        byRoundingCorners: [.allCorners],
                                         cornerRadii: CGSize(width: 0, height: 0))
             let shape = CAShapeLayer()
             shape.path = maskPath.cgPath
             cell.layer.mask = shape
-        }
-    }
-    
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: TableHeaderView.identifier) as? TableHeaderView else { return UITableViewHeaderFooterView() }
-        
-        return header
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let header = tableView.headerView(forSection: 0) else { return }
-        let headerHeight = header.frame.height
-        let contentOffsetY = scrollView.contentOffset.y
-
-        if contentOffsetY > headerHeight {
-            header.alpha = 0
-        } else {
-            let alpha = 1 - (contentOffsetY / headerHeight)
-            header.alpha = alpha
         }
     }
 }

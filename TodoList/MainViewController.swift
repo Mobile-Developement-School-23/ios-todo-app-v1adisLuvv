@@ -28,7 +28,7 @@ final class MainViewController: UIViewController {
         
         guard let navigationBar = navigationController?.navigationBar else { return }
         navigationBar.prefersLargeTitles = true
-        navigationBar.layoutMargins.left = 36
+        navigationBar.layoutMargins.left = 32
         
         let largeTitleAttributes = [
             NSAttributedString.Key.foregroundColor: ColorScheme.primaryLabel,
