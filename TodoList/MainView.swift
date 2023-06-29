@@ -11,6 +11,7 @@ import SnapKit
 final class MainView: UIView {
     
     private var items: [TodoItem] = []
+    private var completedItemsCounter = 0
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -42,6 +43,57 @@ final class MainView: UIView {
         return button
     }()
     
+    
+    // MARK: - Header Elements
+    private lazy var completedLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Completed - 0"
+        label.textColor = ColorScheme.tertiaryLabel
+        label.font = .systemFont(ofSize: 15)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var showHideButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Show", for: .normal)
+        button.setTitleColor(ColorScheme.blue, for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 15)
+//        button.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    
+    // MARK: - Footer Elements
+    private lazy var newLabel: UILabel = {
+        let label = UILabel()
+        label.text = "New"
+        label.textColor = ColorScheme.tertiaryLabel
+        label.textAlignment = .left
+        label.font = .systemFont(ofSize: 17)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var whiteView: UIView = {
+        let view = UIView()
+        view.backgroundColor = ColorScheme.secondaryBackground
+        view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        view.layer.cornerRadius = 16
+        // target
+        view.addSubview(newLabel)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var clearView: UIView = {
+        let view = UIView()
+        view.backgroundColor = ColorScheme.mainPrimaryBackground
+        return view
+    }()
+    
+    
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -61,26 +113,8 @@ final class MainView: UIView {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40))
         headerView.backgroundColor = ColorScheme.mainPrimaryBackground
         
-        let completedLabel: UILabel = {
-            let label = UILabel()
-            label.text = "Completed - 0"
-            label.textColor = ColorScheme.tertiaryLabel
-            label.font = .systemFont(ofSize: 15)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            headerView.addSubview(label)
-            return label
-        }()
-        
-        let showHideButton: UIButton = {
-            let button = UIButton()
-            button.setTitle("Show", for: .normal)
-            button.setTitleColor(ColorScheme.blue, for: .normal)
-            button.titleLabel?.font = .boldSystemFont(ofSize: 15)
-    //        button.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            headerView.addSubview(button)
-            return button
-        }()
+        headerView.addSubview(completedLabel)
+        headerView.addSubview(showHideButton)
         
         completedLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
@@ -99,35 +133,8 @@ final class MainView: UIView {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 56 + 86))
         footerView.backgroundColor = ColorScheme.mainPrimaryBackground
         
-        let newLabel: UILabel = {
-            let label = UILabel()
-            label.text = "New"
-            label.textColor = ColorScheme.tertiaryLabel
-            label.textAlignment = .left
-            label.font = .systemFont(ofSize: 17)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            return label
-        }()
-        
-        let whiteView: UIView = {
-            let view = UIView()
-            view.backgroundColor = ColorScheme.secondaryBackground
-            view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-            view.layer.cornerRadius = 16
-            // target
-            view.addSubview(newLabel)
-            footerView.addSubview(view)
-            view.translatesAutoresizingMaskIntoConstraints = false
-            return view
-        }()
-        
-        let clearView: UIView = {
-            let view = UIView()
-            view.backgroundColor = ColorScheme.mainPrimaryBackground
-            footerView.addSubview(view)
-            return view
-        }()
-        
+        footerView.addSubview(whiteView)
+        footerView.addSubview(clearView)
         
         newLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16 + 28 + 12)
@@ -168,10 +175,12 @@ final class MainView: UIView {
     
     private func loadTodoItems() {
         let fileCache = FileCache.shared
-        for _ in 0..<6 {
-            let item = TodoItem(text: "Buy cheese", priority: .regular)
-            fileCache.addTask(item)
-        }
+        let item1 = TodoItem(text: "buy cheese", priority: .regular, isDone: false)
+        let item2 = TodoItem(text: "buy milk", priority: .high, isDone: false)
+        let item3 = TodoItem(text: "buy bread", priority: .low, isDone: true)
+        fileCache.addTask(item1)
+        fileCache.addTask(item2)
+        fileCache.addTask(item3)
         items = fileCache.todoItems
     }
     
@@ -209,15 +218,23 @@ extension MainView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else { return UITableViewCell() }
-
+        cell.completedDelegate = self
+        
+        let item = items[indexPath.row]
+        cell.configureCell(with: item)
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { _, _, completionHandler in
+        let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
-                cell.markTaskAsDone()
+                guard let self = self else { return }
+                var item = self.items[indexPath.row]
+                item.isDone.toggle()
+                cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
+                completedItemsCounter += item.isDone ? 1 : -1
             }
             completionHandler(true)
         }
@@ -254,5 +271,16 @@ extension MainView: UITableViewDataSource {
         deleteAction.image = Symbols.deleteTrailingSwipeSymbol
         
         return UISwipeActionsConfiguration(actions: [deleteAction, infoAction])
+    }
+}
+
+extension MainView: TaskTableViewCellCompletedDelegate {
+    func updateCompletedLabel(increase: Bool) {
+        if increase {
+            completedItemsCounter += 1
+        } else {
+            completedItemsCounter -= 1
+        }
+        completedLabel.text = "Completed - \(completedItemsCounter)"
     }
 }

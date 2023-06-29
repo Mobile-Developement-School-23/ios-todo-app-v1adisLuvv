@@ -31,6 +31,7 @@
 		21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */; };
 		21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */; };
 		21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */; };
+		21EA1B182A4DE8EF002B9CB5 /* TaskTableViewCellCompletedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA1B172A4DE8EF002B9CB5 /* TaskTableViewCellCompletedDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
+		21EA1B172A4DE8EF002B9CB5 /* TaskTableViewCellCompletedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCellCompletedDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 			children = (
 				2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */,
 				2128192F2A4B5BF500B9DBF5 /* MainView.swift */,
+				21EA1B172A4DE8EF002B9CB5 /* TaskTableViewCellCompletedDelegate.swift */,
 				212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */,
 				21B845882A410E21007531DB /* DetailView */,
 				21B845872A410E12007531DB /* DetailViewController */,
@@ -315,6 +318,7 @@
 				21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */,
 				21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */,
 				212819302A4B5BF500B9DBF5 /* MainView.swift in Sources */,
+				21EA1B182A4DE8EF002B9CB5 /* TaskTableViewCellCompletedDelegate.swift in Sources */,
 				21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */,
 				21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */,
 				21719C812A3D29540053166D /* TodoItem+CSV.swift in Sources */,
