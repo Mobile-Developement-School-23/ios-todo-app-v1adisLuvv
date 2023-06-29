@@ -168,7 +168,7 @@ final class MainView: UIView {
     
     private func loadTodoItems() {
         let fileCache = FileCache.shared
-        for _ in 0..<25 {
+        for _ in 0..<6 {
             let item = TodoItem(text: "Buy cheese", priority: .regular)
             fileCache.addTask(item)
         }
@@ -211,5 +211,48 @@ extension MainView: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else { return UITableViewCell() }
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { _, _, completionHandler in
+            if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
+                cell.markTaskAsDone()
+            }
+            completionHandler(true)
+        }
+        
+        doneAction.backgroundColor = ColorScheme.green
+        doneAction.image = Symbols.checkedTaskLeadingSwipeSymbol
+
+        return UISwipeActionsConfiguration(actions: [doneAction])
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let infoAction = UIContextualAction(style: .normal, title: "Info") { _, _, completionHandler in
+            print("Go to the detail screen")
+            completionHandler(true)
+        }
+        
+        infoAction.backgroundColor = ColorScheme.lightGray
+        infoAction.image = Symbols.infoTrailingSwipeSymbol
+        
+        let deleteAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
+            guard let self = self else { return }
+            self.items.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .left)
+            if indexPath.row == 0 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+                }
+            }
+            completionHandler(true)
+        }
+        
+        deleteAction.backgroundColor = ColorScheme.red
+        deleteAction.image = Symbols.deleteTrailingSwipeSymbol
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction, infoAction])
     }
 }

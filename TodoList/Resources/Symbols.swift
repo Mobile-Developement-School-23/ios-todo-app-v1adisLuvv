@@ -40,4 +40,18 @@ struct Symbols {
     private static let tableViewDisclosureSymbolConfig = UIImage.SymbolConfiguration(weight: .medium)
     
     static let tableViewDisclosureSymbol = UIImage(systemName: "chevron.forward", withConfiguration: tableViewDisclosureSymbolConfig)!.withTintColor(ColorScheme.gray, renderingMode: .alwaysOriginal)
+    
+    
+    
+    private static let checkedTaskLeadingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
+    
+    static let checkedTaskLeadingSwipeSymbol = UIImage(systemName: "checkmark.circle.fill", withConfiguration: checkedTaskLeadingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
+    
+    private static let infoTrailingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
+    
+    static let infoTrailingSwipeSymbol = UIImage(systemName: "info.circle.fill", withConfiguration: infoTrailingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
+    
+    private static let deleteTrailingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
+    
+    static let deleteTrailingSwipeSymbol = UIImage(systemName: "trash.fill", withConfiguration: deleteTrailingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
 }

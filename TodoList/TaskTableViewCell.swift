@@ -16,7 +16,7 @@ final class TaskTableViewCell: UITableViewCell {
     private lazy var radioButtonView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = Symbols.regularTaskButtonSymbol
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapRadioButton))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(markTaskAsDone))
         imageView.addGestureRecognizer(tap)
         imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -79,7 +79,17 @@ final class TaskTableViewCell: UITableViewCell {
         
     }
     
-    @objc private func didTapRadioButton() {
+    @objc func markTaskAsDone() {
+        if taskLabel.textColor == ColorScheme.primaryLabel {
+            let attributedText = NSMutableAttributedString(string: taskLabel.text ?? "")
+            attributedText.addAttribute(.strikethroughStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: attributedText.length))
+            taskLabel.attributedText = attributedText
+            taskLabel.textColor = ColorScheme.disabledLabel
+        } else {
+            let attributedText = NSMutableAttributedString(string: taskLabel.text ?? "")
+            taskLabel.attributedText = attributedText
+            taskLabel.textColor = ColorScheme.primaryLabel
+        }
         if radioButtonView.image != Symbols.checkedTaskButtonSymbol {
             radioButtonView.image = Symbols.checkedTaskButtonSymbol
         } else {
