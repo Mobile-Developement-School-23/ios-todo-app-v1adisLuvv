@@ -180,14 +180,17 @@ final class MainViewController: UIViewController {
     
     private func loadTodoItems() {
         let fileCache = FileCache.shared
-        for _ in 0..<3 {
-            let item1 = TodoItem(text: "buy cheese", priority: .regular, isDone: false)
-            let item2 = TodoItem(text: "buy milk", priority: .high, isDone: false)
-            let item3 = TodoItem(text: "buy bread", priority: .low, isDone: true)
-            fileCache.addTask(item1)
-            fileCache.addTask(item2)
-            fileCache.addTask(item3)
-        }
+        let item1 = TodoItem(text: "buy cheese", priority: .regular, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
+        let item2 = TodoItem(text: "buy cheese fassst", priority: .high, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
+        let item3 = TodoItem(text: "buy milk", priority: .high, isDone: false)
+        let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
+        let item5 = TodoItem(text: "buy cheese fassst", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
+        fileCache.addTask(item1)
+        fileCache.addTask(item2)
+        fileCache.addTask(item3)
+        fileCache.addTask(item4)
+        fileCache.addTask(item5)
+        
         items = fileCache.todoItems
     }
     
@@ -286,7 +289,7 @@ extension MainViewController: UITableViewDataSource {
                 guard let self = self else { return }
                 self.toggledIsDoneInCell(indexPath: indexPath)
                 let item = self.items[indexPath.row]
-                cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
+                cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                 self.updateCompletedLabel()
             }
             completionHandler(true)
@@ -340,6 +343,9 @@ extension MainViewController: PassDataBackDelegate {
     func toggledIsDoneInCell(indexPath: IndexPath) {
         items[indexPath.row].isDone.toggle()
         updateCompletedLabel()
+        if showCompletedItems {
+            tableView.reloadData()
+        }
     }
     
     func removeExistingItem() {

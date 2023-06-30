@@ -54,4 +54,10 @@ struct Symbols {
     private static let deleteTrailingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
     
     static let deleteTrailingSwipeSymbol = UIImage(systemName: "trash.fill", withConfiguration: deleteTrailingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
+    
+    
+    
+    private static let calendarDeadlineSymbolConfig = UIImage.SymbolConfiguration(weight: .medium)
+    
+    static let calendarDeadlineSymbol = UIImage(systemName: "calendar", withConfiguration: calendarDeadlineSymbolConfig)!.withTintColor(ColorScheme.tertiaryLabel, renderingMode: .alwaysOriginal)
 }

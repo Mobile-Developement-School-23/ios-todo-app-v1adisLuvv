@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class TaskTableViewCell: UITableViewCell {
-
+    
     static let identifier = "TaskTableViewCell"
     var currentItem: TodoItem!
     var currentItemIndexPath: IndexPath!
@@ -38,7 +38,17 @@ final class TaskTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var symbolAndLabelStackView: UIStackView = {
+    private lazy var deadlineLabel: UILabel = {
+        let label = UILabel()
+        label.text = "24 June"
+        label.textColor = ColorScheme.tertiaryLabel
+        label.textAlignment = .left
+        label.font = .systemFont(ofSize: 15)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var deadlineStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.alignment = .center
@@ -46,7 +56,37 @@ final class TaskTableViewCell: UITableViewCell {
         stack.distribution = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(stack)
+        let imageView = UIImageView(image: Symbols.calendarDeadlineSymbol)
+        
+        imageView.snp.makeConstraints { make in
+            make.width.equalTo(imageView.image?.size.width ?? 0)
+        }
+        
+        stack.addArrangedSubview(imageView)
+        stack.addArrangedSubview(deadlineLabel)
+        
+        return stack
+    }()
+    
+    private lazy var labelAndDeadlineStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.spacing = 2
+        stack.distribution = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stack
+    }()
+    
+    private lazy var symbolAndTaskLabelStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 2
+        stack.distribution = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
         return stack
     }()
     
@@ -59,7 +99,7 @@ final class TaskTableViewCell: UITableViewCell {
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         stack.addArrangedSubview(radioButtonView)
-        stack.addArrangedSubview(symbolAndLabelStackView)
+        stack.addArrangedSubview(symbolAndTaskLabelStackView)
         
         contentView.addSubview(stack)
         return stack
@@ -81,8 +121,12 @@ final class TaskTableViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        symbolAndLabelStackView.arrangedSubviews.forEach { subview in
-            symbolAndLabelStackView.removeArrangedSubview(subview)
+        symbolAndTaskLabelStackView.arrangedSubviews.forEach { subview in
+            symbolAndTaskLabelStackView.removeArrangedSubview(subview)
+            subview.removeFromSuperview()
+        }
+        labelAndDeadlineStackView.arrangedSubviews.forEach { subview in
+            symbolAndTaskLabelStackView.removeArrangedSubview(subview)
             subview.removeFromSuperview()
         }
         radioButtonView.image = Symbols.regularTaskButtonSymbol
@@ -105,13 +149,11 @@ final class TaskTableViewCell: UITableViewCell {
             make.top.bottom.equalToSuperview().inset(16)
         }
         
-        taskLabel.setContentHuggingPriority(.required, for: .horizontal)
-        
     }
     
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
-        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high)
+        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
         delegate?.toggledIsDoneInCell(indexPath: currentItemIndexPath)
     }
     
@@ -120,16 +162,23 @@ final class TaskTableViewCell: UITableViewCell {
         currentItemIndexPath = indexPath
         
         taskLabel.text = item.text
-        markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
+        if let deadline = item.deadline {
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "en_US")
+            dateFormatter.dateFormat = "dd MMMM"
+            let dateString = dateFormatter.string(from: deadline)
+            deadlineLabel.text = dateString
+        }
+        markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
     }
     
-    func markTaskAsDone(_ isDone: Bool, isHighPriority: Bool) {
+    func markTaskAsDone(_ isDone: Bool, isHighPriority: Bool, hasDeadline: Bool) {
         if isDone {
-            symbolAndLabelStackView.arrangedSubviews.forEach { subview in
-                symbolAndLabelStackView.removeArrangedSubview(subview)
+            symbolAndTaskLabelStackView.arrangedSubviews.forEach { subview in
+                symbolAndTaskLabelStackView.removeArrangedSubview(subview)
                 subview.removeFromSuperview()
             }
-            symbolAndLabelStackView.addArrangedSubview(taskLabel)
+            symbolAndTaskLabelStackView.addArrangedSubview(taskLabel)
             
             radioButtonView.image = Symbols.checkedTaskButtonSymbol
             
@@ -139,14 +188,14 @@ final class TaskTableViewCell: UITableViewCell {
             taskLabel.attributedText = attributedText
             taskLabel.textColor = ColorScheme.disabledLabel
         } else {
-            symbolAndLabelStackView.arrangedSubviews.forEach { subview in
-                symbolAndLabelStackView.removeArrangedSubview(subview)
+            symbolAndTaskLabelStackView.arrangedSubviews.forEach { subview in
+                symbolAndTaskLabelStackView.removeArrangedSubview(subview)
                 subview.removeFromSuperview()
             }
             
             if isHighPriority {
                 let imageView = UIImageView(image: Symbols.doubleExclamationMarkSymbol)
-                symbolAndLabelStackView.addArrangedSubview(imageView)
+                symbolAndTaskLabelStackView.addArrangedSubview(imageView)
                 
                 imageView.snp.makeConstraints { make in
                     make.width.equalTo(imageView.image?.size.width ?? 0)
@@ -155,10 +204,18 @@ final class TaskTableViewCell: UITableViewCell {
             } else {
                 radioButtonView.image = Symbols.regularTaskButtonSymbol
             }
-            symbolAndLabelStackView.addArrangedSubview(taskLabel)
+            
+            labelAndDeadlineStackView.addArrangedSubview(taskLabel)
             let attributedText = NSMutableAttributedString(string: taskLabel.text ?? "")
             taskLabel.attributedText = attributedText
             taskLabel.textColor = ColorScheme.primaryLabel
+            
+            if hasDeadline {
+                labelAndDeadlineStackView.addArrangedSubview(deadlineStackView)
+            }
+            
+            symbolAndTaskLabelStackView.addArrangedSubview(labelAndDeadlineStackView)
+            
         }
     }
 }
