@@ -13,7 +13,7 @@ struct Symbols {
     
     // this symbols 100% exists because this is the systemName so we can use force unwrap
     private static let arrowDownSymbolConfig = UIImage.SymbolConfiguration(weight: .bold)
-    
+
     static let arrowDownSymbol = UIImage(systemName: "arrow.down", withConfiguration: arrowDownSymbolConfig)!.withTintColor(ColorScheme.gray, renderingMode: .alwaysOriginal)
     
     private static let doubleExclamationMarkSymbolConfig = UIImage.SymbolConfiguration(weight: .bold)

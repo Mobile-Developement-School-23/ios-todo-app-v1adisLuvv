@@ -56,7 +56,7 @@ final class ToDoItemJSONTests: XCTestCase {
             FieldName.isDone.rawValue: isDone,
             FieldName.dateCreated.rawValue: dateCreatedTimestamp,
             FieldName.deadline.rawValue: deadlineTimestamp,
-            FieldName.dateModified.rawValue: dateModifiedTimestamp,
+            FieldName.dateModified.rawValue: dateModifiedTimestamp
         ]
         
         let todoItem = TodoItem.parse(json: validJSON)

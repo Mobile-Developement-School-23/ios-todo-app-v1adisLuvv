@@ -233,7 +233,7 @@ final class DetailViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         let item = TodoItem(id: id ?? UUID().uuidString, text: text ?? "", priority: priority, deadline: deadline)
-        if let _ = currentItem {
+        if currentItem != nil {
             delegate?.updateExistingItem(item)
         } else {
             delegate?.createNewItem(item)
@@ -242,7 +242,7 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func didTapRemoveButton() {
-        if let _ = currentItem {
+        if currentItem != nil {
             delegate?.removeExistingItem()
             dismiss(animated: true)
         } else {
@@ -415,7 +415,7 @@ extension DetailViewController {
     }
     
     @objc func keyboardWillHide(notification: Notification) {
-        if let _ = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue != nil {
             scrollView.snp.updateConstraints { make in
                 make.bottom.equalTo(view.safeAreaLayoutGuide)
             }
