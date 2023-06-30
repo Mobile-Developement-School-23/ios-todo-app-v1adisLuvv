@@ -25,6 +25,7 @@
 		21719C922A3D2A9D0053166D /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C912A3D2A9D0053166D /* TodoItemTests.swift */; };
 		21719C942A3D2B0A0053166D /* TodoItemJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C932A3D2B0A0053166D /* TodoItemJSONTests.swift */; };
 		21719C962A3D2B940053166D /* TodoItemCSVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C952A3D2B940053166D /* TodoItemCSVTests.swift */; };
+		218077562A4F62F0005B4F4B /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 218077552A4F62F0005B4F4B /* CocoaLumberjackSwift */; };
 		21B8457B2A410A85007531DB /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 21B8457A2A410A85007531DB /* SnapKit */; };
 		21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */; };
 		21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */; };
@@ -75,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				218077562A4F62F0005B4F4B /* CocoaLumberjackSwift in Frameworks */,
 				21B8457B2A410A85007531DB /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +212,7 @@
 			name = TodoList;
 			packageProductDependencies = (
 				21B8457A2A410A85007531DB /* SnapKit */,
+				218077552A4F62F0005B4F4B /* CocoaLumberjackSwift */,
 			);
 			productName = TodoList;
 			productReference = 21719C652A3D26850053166D /* TodoList.app */;
@@ -264,6 +267,7 @@
 			mainGroup = 21719C5C2A3D26850053166D;
 			packageReferences = (
 				21B845792A410A85007531DB /* XCRemoteSwiftPackageReference "SnapKit" */,
+				218077542A4F62F0005B4F4B /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			productRefGroup = 21719C662A3D26850053166D /* Products */;
 			projectDirPath = "";
@@ -591,6 +595,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		218077542A4F62F0005B4F4B /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 		21B845792A410A85007531DB /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -602,6 +614,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		218077552A4F62F0005B4F4B /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 218077542A4F62F0005B4F4B /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
 		21B8457A2A410A85007531DB /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 21B845792A410A85007531DB /* XCRemoteSwiftPackageReference "SnapKit" */;

@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import CocoaLumberjackSwift
 
 final class TaskTableViewCell: UITableViewCell {
     
@@ -217,5 +218,7 @@ final class TaskTableViewCell: UITableViewCell {
             symbolAndTaskLabelStackView.addArrangedSubview(labelAndDeadlineStackView)
             
         }
+        
+        DDLogInfo("Task Configured")
     }
 }

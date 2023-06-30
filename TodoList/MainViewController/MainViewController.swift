@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import CocoaLumberjackSwift
 
 final class MainViewController: UIViewController {
     
@@ -112,6 +113,18 @@ final class MainViewController: UIViewController {
         setupConstraints()
         setupNavigationBar()
         updateCompletedLabel()
+        setupLumberack()
+        
+        DDLogInfo("viewDidLoad finished")
+    }
+    
+    private func setupLumberack() {
+        DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
+
+        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
+        fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        DDLog.add(fileLogger)
     }
     
     private func createHeader() {
@@ -132,6 +145,8 @@ final class MainViewController: UIViewController {
         }
         
         tableView.tableHeaderView = headerView
+        
+        DDLogInfo("tableHeaderView finished")
     }
     
     private func createFooter() {
@@ -160,6 +175,8 @@ final class MainViewController: UIViewController {
         
         
         tableView.tableFooterView = footerView
+        
+        DDLogInfo("tableFooterView finished")
     }
     
     // MARK: - setupConstraints
@@ -220,6 +237,8 @@ final class MainViewController: UIViewController {
         showCompletedItems.toggle()
         tableView.reloadData()
         view.layoutIfNeeded()
+        
+        DDLogInfo("Show/hide button toggled")
     }
 
 }
@@ -266,7 +285,10 @@ extension MainViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else {
+            DDLogError("Cannot cast cell")
+            return UITableViewCell()
+        }
         cell.delegate = self
         
         var filteredItems: [TodoItem]
@@ -286,13 +308,15 @@ extension MainViewController: UITableViewDataSource {
         
         let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
-                guard let self = self else { return }
+                guard let self = self else { DDLogError("self does not exist"); return }
                 self.toggledIsDoneInCell(indexPath: indexPath)
                 let item = self.items[indexPath.row]
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                 self.updateCompletedLabel()
             }
             completionHandler(true)
+            
+            DDLogInfo("done action used")
         }
         
         doneAction.backgroundColor = ColorScheme.green
@@ -304,7 +328,7 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let infoAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
-            guard let self = self else { return }
+            guard let self = self else { DDLogError("self does not exist"); return }
             let selectedItem = self.items[indexPath.row]
             self.lastSelectedIndexPath = self.tableView.indexPathForSelectedRow
             self.tableView.deselectRow(at: indexPath, animated: true)
@@ -313,16 +337,20 @@ extension MainViewController: UITableViewDataSource {
             detailVC.delegate = self
             self.present(detailVC, animated: true)
             completionHandler(true)
+            
+            DDLogInfo("info action used")
         }
         
         infoAction.backgroundColor = ColorScheme.lightGray
         infoAction.image = Symbols.infoTrailingSwipeSymbol
         
         let deleteAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
-            guard let self = self else { return }
+            guard let self = self else { DDLogError("self does not exist"); return }
             lastSelectedIndexPath = indexPath
             self.removeExistingItem()
             completionHandler(true)
+            
+            DDLogInfo("delete action used")
         }
         
         deleteAction.backgroundColor = ColorScheme.red
@@ -361,11 +389,13 @@ extension MainViewController: PassDataBackDelegate {
         tableView.deleteRows(at: [lastSelectedIndexPath], with: .left)
         if lastSelectedIndexPath.row == 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
-                guard let self = self else { return }
+                guard let self = self else { DDLogError("self does not exist"); return }
                 self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
             }
         }
         updateCompletedLabel()
+        
+        DDLogInfo("item removed")
     }
 }
 
