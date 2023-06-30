@@ -11,6 +11,6 @@ import FileCache
 protocol PassDataBackDelegate: AnyObject {
     func updateExistingItem(_ item: TodoItem)
     func createNewItem(_ item: TodoItem)
-    func toggledIsDoneInCell(indexPath: IndexPath)
+    func changeItemCompleteness(indexPath: IndexPath)
     func removeExistingItem()
 }

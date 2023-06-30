@@ -274,6 +274,95 @@ extension MainViewController: UITableViewDelegate {
             cell.layer.mask = shape
         }
     }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        let identifier = "\(indexPath.row)" as NSCopying
+        let configuration = UIContextMenuConfiguration(identifier: identifier, previewProvider: nil) { [weak self] _ in
+            guard let self = self else { DDLogError("self does not exist"); return UIMenu() }
+            
+            let checkAsCompletedAction = UIAction(title: "Complete", image: Symbols.checkedTaskButtonSymbol) { _ in
+                if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
+                    self.changeItemCompleteness(indexPath: indexPath)
+                    let item = self.items[indexPath.row]
+                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                    self.updateCompletedLabel()
+                }
+            }
+            
+            let checkAsIncompletedAction = UIAction(title: "Incomplete", image: Symbols.regularTaskButtonSymbol) { _ in
+                if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
+                    self.changeItemCompleteness(indexPath: indexPath)
+                    let item = self.items[indexPath.row]
+                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                    self.updateCompletedLabel()
+                }
+            }
+            
+            let makeImportantAction = UIAction(title: "Mark as important", image: Symbols.doubleExclamationMarkSymbol) { _ in
+                self.changeItemPriority(indexPath: indexPath, to: .high)
+            }
+            
+            let makeRegularAction = UIAction(title: "Make as regular") { _ in
+                self.changeItemPriority(indexPath: indexPath, to: .regular)
+            }
+            
+            let makeLowAction = UIAction(title: "Make as unimportant", image: Symbols.arrowDownSymbol) { _ in
+                self.changeItemPriority(indexPath: indexPath, to: .low)
+            }
+            
+            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                self.lastSelectedIndexPath = indexPath
+                self.removeExistingItem()
+                
+                DDLogInfo("delete action used")
+            }
+            
+            var children: [UIMenuElement] = []
+            
+            if self.items[indexPath.row].isDone {
+                children.append(checkAsIncompletedAction)
+            } else {
+                children.append(checkAsCompletedAction)
+            }
+            
+            if self.items[indexPath.row].priority == .low {
+                children.append(makeImportantAction)
+                children.append(makeRegularAction)
+            } else if self.items[indexPath.row].priority == .regular {
+                children.append(makeImportantAction)
+                children.append(makeLowAction)
+            } else {
+                children.append(makeRegularAction)
+                children.append(makeLowAction)
+            }
+            
+            children.append(deleteAction)
+            
+            return UIMenu(children: children)
+        }
+        
+        return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+        
+        guard let identifier = configuration.identifier as? String,
+              let index = Int(identifier),
+              tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TaskTableViewCell != nil
+        else { return }
+        
+        let selectedItem = items[index]
+        lastSelectedIndexPath = tableView.indexPathForSelectedRow
+        
+        let detailVC = DetailViewController(currentItem: selectedItem)
+        detailVC.delegate = self
+        
+        animator.addCompletion { [weak self] in
+            guard let self = self else { return }
+            present(detailVC, animated: true)
+        }
+    }
 }
 
 extension MainViewController: UITableViewDataSource {
@@ -310,7 +399,7 @@ extension MainViewController: UITableViewDataSource {
         let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
                 guard let self = self else { DDLogError("self does not exist"); return }
-                self.toggledIsDoneInCell(indexPath: indexPath)
+                self.changeItemCompleteness(indexPath: indexPath)
                 let item = self.items[indexPath.row]
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                 self.updateCompletedLabel()
@@ -376,7 +465,7 @@ extension MainViewController: PassDataBackDelegate {
         updateCompletedLabel()
     }
     
-    func toggledIsDoneInCell(indexPath: IndexPath) {
+    func changeItemCompleteness(indexPath: IndexPath) {
         items[indexPath.row].isDone.toggle()
         updateCompletedLabel()
         if showCompletedItems {
@@ -407,5 +496,16 @@ extension MainViewController {
             return count + (item.isDone ? 1 : 0)
         }
         completedLabel.text = "Completed - \(completedItems)"
+    }
+    
+    private func changeItemPriority(indexPath: IndexPath, to priority: Priority) {
+        items[indexPath.row].priority = priority
+        tableView.reloadData()
+    }
+    
+    private func changeItemCompleteness(indexPath: IndexPath, to isDone: Bool) {
+        items[indexPath.row].isDone.toggle()
+        updateCompletedLabel()
+        tableView.reloadData()
     }
 }

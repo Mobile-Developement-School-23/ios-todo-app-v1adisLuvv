@@ -156,7 +156,7 @@ final class TaskTableViewCell: UITableViewCell {
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
         markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
-        delegate?.toggledIsDoneInCell(indexPath: currentItemIndexPath)
+        delegate?.changeItemCompleteness(indexPath: currentItemIndexPath)
     }
     
     func configureCell(with item: TodoItem, at indexPath: IndexPath) {
@@ -220,6 +220,6 @@ final class TaskTableViewCell: UITableViewCell {
             
         }
         
-        DDLogInfo("Task Configured")
+        DDLogInfo("TableViewCell configured")
     }
 }
