@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FileCache
 
 protocol PassDataBackDelegate: AnyObject {
     func updateExistingItem(_ item: TodoItem)

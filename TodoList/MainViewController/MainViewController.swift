@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import CocoaLumberjackSwift
+import FileCache
 
 final class MainViewController: UIViewController {
     

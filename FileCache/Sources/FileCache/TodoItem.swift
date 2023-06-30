@@ -1,22 +1,22 @@
 //
-//  TodoItem.swift
-//  TodoList
+//  File.swift
+//  
 //
-//  Created by Vlad Boguzh on 2023-06-17.
+//  Created by Vlad Boguzh on 2023-07-01.
 //
 
 import Foundation
 
-struct TodoItem {
-    let id: String
-    var text: String
-    var priority: Priority
-    var deadline: Date?
-    var isDone: Bool
-    let dateCreated: Date
-    var dateModified: Date?
+public struct TodoItem {
+    public let id: String
+    public var text: String
+    public var priority: Priority
+    public var deadline: Date?
+    public var isDone: Bool
+    public let dateCreated: Date
+    public var dateModified: Date?
     
-    init(id: String = UUID().uuidString, text: String, priority: Priority, deadline: Date? = nil, isDone: Bool = false, dateCreated: Date = Date(), dateModified: Date? = nil) {
+    public init(id: String = UUID().uuidString, text: String, priority: Priority, deadline: Date? = nil, isDone: Bool = false, dateCreated: Date = Date(), dateModified: Date? = nil) {
         self.id = id
         self.text = text
         self.priority = priority
@@ -30,14 +30,14 @@ struct TodoItem {
 // we need this conformance to be able to check the equality of two TodoItems
 extension TodoItem: Equatable {}
 
-enum Priority: String {
+public enum Priority: String {
     case low
     case regular
     case high
 }
 
 // enum representing the field names for JSON
-enum FieldName: String {
+public enum FieldName: String {
     case id
     case text
     case priority

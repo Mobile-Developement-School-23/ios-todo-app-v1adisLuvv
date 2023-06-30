@@ -1,13 +1,13 @@
 //
-//  TodoItem+CSV.swift
-//  TodoList
+//  File.swift
+//  
 //
-//  Created by Vlad Boguzh on 2023-06-17.
+//  Created by Vlad Boguzh on 2023-07-01.
 //
 
 import Foundation
 
-extension TodoItem {
+public extension TodoItem {
     static func parse(csv: String) -> TodoItem? {
         
         let valuesRow = splitCSVLineIntoValues(csv) // custom func
