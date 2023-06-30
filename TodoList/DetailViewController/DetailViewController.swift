@@ -216,9 +216,12 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func didTapRemoveButton() {
-        let fileCache = FileCache.shared
-        fileCache.removeTask(withID: id ?? "")
-        fileCache.saveJSONToFile(fileName: fileName)
+        if let _ = currentItem {
+            delegate?.removeExistingItem()
+            dismiss(animated: true)
+        } else {
+            didTapSaveButton()
+        }
     }
 }
 

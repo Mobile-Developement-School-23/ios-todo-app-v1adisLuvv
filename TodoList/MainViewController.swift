@@ -263,7 +263,7 @@ extension MainViewController: UITableViewDataSource {
                 self.items[indexPath.row].isDone.toggle()
                 let item = self.items[indexPath.row]
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
-                updateCompletedLabel()
+                self.updateCompletedLabel()
             }
             completionHandler(true)
         }
@@ -286,13 +286,8 @@ extension MainViewController: UITableViewDataSource {
         
         let deleteAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
             guard let self = self else { return }
-            self.items.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .left)
-            if indexPath.row == 0 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                    self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
-                }
-            }
+            lastSelectedIndexPath = indexPath
+            self.removeExistingItem()
             completionHandler(true)
         }
         
@@ -308,16 +303,31 @@ extension MainViewController: PassDataBackDelegate {
         if let lastSelectedIndexPath = lastSelectedIndexPath {
             items[lastSelectedIndexPath.row] = item
             tableView.reloadData()
+            updateCompletedLabel()
         }
     }
     
     func createNewItem(_ item: TodoItem) {
         items.append(item)
         tableView.reloadData()
+        updateCompletedLabel()
     }
     
     func toggledIsDoneInCell(indexPath: IndexPath) {
         items[indexPath.row].isDone.toggle()
+        updateCompletedLabel()
+    }
+    
+    func removeExistingItem() {
+        guard let lastSelectedIndexPath = lastSelectedIndexPath else { return }
+        items.remove(at: lastSelectedIndexPath.row)
+        tableView.deleteRows(at: [lastSelectedIndexPath], with: .left)
+        if lastSelectedIndexPath.row == 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
+                guard let self = self else { return }
+                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+            }
+        }
         updateCompletedLabel()
     }
 }
