@@ -11,7 +11,7 @@ import SnapKit
 final class MainViewController: UIViewController {
     
     private var items: [TodoItem] = []
-    private var completedItemsCounter = 0
+    private var lastSelectedIndexPath: IndexPath?
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -106,6 +106,7 @@ final class MainViewController: UIViewController {
         createFooter()
         setupConstraints()
         setupNavigationBar()
+        updateCompletedLabel()
     }
     
     private func createHeader() {
@@ -201,6 +202,7 @@ final class MainViewController: UIViewController {
     
     @objc private func didTapAddButton() {
         let detailVC = DetailViewController()
+        detailVC.delegate = self
         present(detailVC, animated: true)
     }
 
@@ -210,9 +212,11 @@ extension MainViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = items[indexPath.row]
+        lastSelectedIndexPath = tableView.indexPathForSelectedRow
         tableView.deselectRow(at: indexPath, animated: true)
         
         let detailVC = DetailViewController(currentItem: selectedItem)
+        detailVC.delegate = self
         present(detailVC, animated: true)
         
     }
@@ -243,10 +247,10 @@ extension MainViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else { return UITableViewCell() }
-        cell.completedDelegate = self
+        cell.delegate = self
         
         let item = items[indexPath.row]
-        cell.configureCell(with: item)
+        cell.configureCell(with: item, at: indexPath)
         
         return cell
     }
@@ -256,10 +260,10 @@ extension MainViewController: UITableViewDataSource {
         let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
                 guard let self = self else { return }
-                var item = self.items[indexPath.row]
-                item.isDone.toggle()
+                self.items[indexPath.row].isDone.toggle()
+                let item = self.items[indexPath.row]
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
-                completedItemsCounter += item.isDone ? 1 : -1
+                updateCompletedLabel()
             }
             completionHandler(true)
         }
@@ -299,13 +303,31 @@ extension MainViewController: UITableViewDataSource {
     }
 }
 
-extension MainViewController: TaskTableViewCellCompletedDelegate {
-    func updateCompletedLabel(increase: Bool) {
-        if increase {
-            completedItemsCounter += 1
-        } else {
-            completedItemsCounter -= 1
+extension MainViewController: PassDataBackDelegate {
+    func updateExistingItem(_ item: TodoItem) {
+        if let lastSelectedIndexPath = lastSelectedIndexPath {
+            items[lastSelectedIndexPath.row] = item
+            tableView.reloadData()
         }
-        completedLabel.text = "Completed - \(completedItemsCounter)"
+    }
+    
+    func createNewItem(_ item: TodoItem) {
+        items.append(item)
+        tableView.reloadData()
+    }
+    
+    func toggledIsDoneInCell(indexPath: IndexPath) {
+        items[indexPath.row].isDone.toggle()
+        updateCompletedLabel()
+    }
+}
+
+extension MainViewController {
+    private func updateCompletedLabel() {
+        
+        let completedItems = items.reduce(0) { count, item in
+            return count + (item.isDone ? 1 : 0)
+        }
+        completedLabel.text = "Completed - \(completedItems)"
     }
 }

@@ -11,10 +11,10 @@ import SnapKit
 final class TaskTableViewCell: UITableViewCell {
 
     static let identifier = "TaskTableViewCell"
-    var isHighPriority = false
-    var isDone = false
+    var currentItem: TodoItem!
+    var currentItemIndexPath: IndexPath!
     
-    weak var completedDelegate: TaskTableViewCellCompletedDelegate?
+    weak var delegate: PassDataBackDelegate?
     
     // MARK: - UI Elements
     private lazy var radioButtonView: UIImageView = {
@@ -80,6 +80,18 @@ final class TaskTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        symbolAndLabelStackView.arrangedSubviews.forEach { subview in
+            symbolAndLabelStackView.removeArrangedSubview(subview)
+            subview.removeFromSuperview()
+        }
+        radioButtonView.image = Symbols.regularTaskButtonSymbol
+        let attributedText = NSMutableAttributedString(string: taskLabel.text ?? "")
+        taskLabel.attributedText = attributedText
+        taskLabel.textColor = ColorScheme.primaryLabel
+        super.prepareForReuse()
+    }
+    
     // MARK: - setupConstraints
     private func setupConstraints() {
         
@@ -98,68 +110,52 @@ final class TaskTableViewCell: UITableViewCell {
     }
     
     @objc private func didTapRadioButton() {
-        isDone.toggle()
-        markTaskAsDone(isDone, isHighPriority: isHighPriority)
-        completedDelegate?.updateCompletedLabel(increase: isDone)
+        currentItem.isDone.toggle()
+        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high)
+        delegate?.toggledIsDoneInCell(indexPath: currentItemIndexPath)
     }
     
-    func configureCell(with item: TodoItem) {
-        isHighPriority = item.priority == .high
-        isDone = item.isDone
+    func configureCell(with item: TodoItem, at indexPath: IndexPath) {
+        currentItem = item
+        currentItemIndexPath = indexPath
         
-        if isHighPriority {
-            let imageView = UIImageView(image: Symbols.doubleExclamationMarkSymbol)
-            symbolAndLabelStackView.addArrangedSubview(imageView)
-            
-            imageView.snp.makeConstraints { make in
-                make.width.equalTo(imageView.image?.size.width ?? 0)
-            }
-        }
-        
-        
-        symbolAndLabelStackView.addArrangedSubview(taskLabel)
         taskLabel.text = item.text
-        
-        markTaskAsDone(isDone, isHighPriority: isHighPriority)
-        if isDone { completedDelegate?.updateCompletedLabel(increase: isDone) }
+        markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
     }
     
     func markTaskAsDone(_ isDone: Bool, isHighPriority: Bool) {
         if isDone {
-            if isHighPriority {
-                symbolAndLabelStackView.arrangedSubviews.forEach { subview in
-                    symbolAndLabelStackView.removeArrangedSubview(subview)
-                    subview.removeFromSuperview()
-                }
-                
-                symbolAndLabelStackView.addArrangedSubview(taskLabel)
+            symbolAndLabelStackView.arrangedSubviews.forEach { subview in
+                symbolAndLabelStackView.removeArrangedSubview(subview)
+                subview.removeFromSuperview()
             }
+            symbolAndLabelStackView.addArrangedSubview(taskLabel)
+            
             radioButtonView.image = Symbols.checkedTaskButtonSymbol
+            
             let attributedText = NSMutableAttributedString(string: taskLabel.text ?? "")
             attributedText.addAttribute(.strikethroughStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: attributedText.length))
+            
             taskLabel.attributedText = attributedText
             taskLabel.textColor = ColorScheme.disabledLabel
         } else {
+            symbolAndLabelStackView.arrangedSubviews.forEach { subview in
+                symbolAndLabelStackView.removeArrangedSubview(subview)
+                subview.removeFromSuperview()
+            }
+            
             if isHighPriority {
-                
-                symbolAndLabelStackView.arrangedSubviews.forEach { subview in
-                    symbolAndLabelStackView.removeArrangedSubview(subview)
-                    subview.removeFromSuperview()
-                }
-                
                 let imageView = UIImageView(image: Symbols.doubleExclamationMarkSymbol)
                 symbolAndLabelStackView.addArrangedSubview(imageView)
                 
                 imageView.snp.makeConstraints { make in
                     make.width.equalTo(imageView.image?.size.width ?? 0)
                 }
-                
-                symbolAndLabelStackView.addArrangedSubview(taskLabel)
-                
                 radioButtonView.image = Symbols.highPriorityTaskButtonSymbol
             } else {
                 radioButtonView.image = Symbols.regularTaskButtonSymbol
             }
+            symbolAndLabelStackView.addArrangedSubview(taskLabel)
             let attributedText = NSMutableAttributedString(string: taskLabel.text ?? "")
             taskLabel.attributedText = attributedText
             taskLabel.textColor = ColorScheme.primaryLabel

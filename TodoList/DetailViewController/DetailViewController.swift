@@ -11,6 +11,7 @@ import SnapKit
 final class DetailViewController: UIViewController {
     
     // MARK: - Variables
+    weak var delegate: PassDataBackDelegate?
     private let fileName = "firstTodoItem" // file where the TodoItem will be saved
     
     private let currentItem: TodoItem?
@@ -205,10 +206,13 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func didTapSaveButton() {
-        let todoItem = TodoItem(id: id ?? UUID().uuidString, text: text ?? "", priority: priority, deadline: deadline)
-        let fileCache = FileCache.shared
-        fileCache.addTask(todoItem)
-        fileCache.saveJSONToFile(fileName: fileName)
+        let item = TodoItem(id: id ?? UUID().uuidString, text: text ?? "", priority: priority, deadline: deadline)
+        if let _ = currentItem {
+            delegate?.updateExistingItem(item)
+        } else {
+            delegate?.createNewItem(item)
+        }
+        dismiss(animated: true)
     }
     
     @objc private func didTapRemoveButton() {
