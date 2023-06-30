@@ -303,8 +303,15 @@ extension MainViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let infoAction = UIContextualAction(style: .normal, title: "Info") { _, _, completionHandler in
-            print("Go to the detail screen")
+        let infoAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
+            guard let self = self else { return }
+            let selectedItem = self.items[indexPath.row]
+            self.lastSelectedIndexPath = self.tableView.indexPathForSelectedRow
+            self.tableView.deselectRow(at: indexPath, animated: true)
+            
+            let detailVC = DetailViewController(currentItem: selectedItem)
+            detailVC.delegate = self
+            self.present(detailVC, animated: true)
             completionHandler(true)
         }
         
