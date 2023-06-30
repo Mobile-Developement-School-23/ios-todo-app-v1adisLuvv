@@ -12,6 +12,11 @@ final class MainViewController: UIViewController {
     
     private var items: [TodoItem] = []
     private var lastSelectedIndexPath: IndexPath?
+    private var showCompletedItems = false {
+        didSet {
+            showHideButton.setTitle(showCompletedItems ? "Hide" : "Show", for: .normal)
+        }
+    }
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -57,10 +62,10 @@ final class MainViewController: UIViewController {
     
     private lazy var showHideButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Show", for: .normal)
+        button.setTitle(showCompletedItems ? "Hide" : "Show", for: .normal)
         button.setTitleColor(ColorScheme.blue, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 15)
-//        button.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapShowHideButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -175,7 +180,7 @@ final class MainViewController: UIViewController {
     
     private func loadTodoItems() {
         let fileCache = FileCache.shared
-        for _ in 0..<5 {
+        for _ in 0..<3 {
             let item1 = TodoItem(text: "buy cheese", priority: .regular, isDone: false)
             let item2 = TodoItem(text: "buy milk", priority: .high, isDone: false)
             let item3 = TodoItem(text: "buy bread", priority: .low, isDone: true)
@@ -206,6 +211,12 @@ final class MainViewController: UIViewController {
         let detailVC = DetailViewController()
         detailVC.delegate = self
         present(detailVC, animated: true)
+    }
+    
+    @objc private func didTapShowHideButton() {
+        showCompletedItems.toggle()
+        tableView.reloadData()
+        view.layoutIfNeeded()
     }
 
 }
@@ -244,14 +255,25 @@ extension MainViewController: UITableViewDelegate {
 
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        if showCompletedItems {
+            return items.count
+        } else {
+            return items.filter { !$0.isDone }.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else { return UITableViewCell() }
         cell.delegate = self
         
-        let item = items[indexPath.row]
+        var filteredItems: [TodoItem]
+        if showCompletedItems {
+            filteredItems = items
+        } else {
+            filteredItems = items.filter { !$0.isDone }
+        }
+        
+        let item = filteredItems[indexPath.row]
         cell.configureCell(with: item, at: indexPath)
         
         return cell
@@ -262,7 +284,7 @@ extension MainViewController: UITableViewDataSource {
         let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
                 guard let self = self else { return }
-                self.items[indexPath.row].isDone.toggle()
+                self.toggledIsDoneInCell(indexPath: indexPath)
                 let item = self.items[indexPath.row]
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high)
                 self.updateCompletedLabel()
