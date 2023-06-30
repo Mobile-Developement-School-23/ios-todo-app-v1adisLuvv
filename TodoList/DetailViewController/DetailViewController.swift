@@ -146,6 +146,32 @@ final class DetailViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        if UIDevice.current.orientation.isPortrait {
+            tableView.isHidden = false
+            removeButton.isHidden = false
+            
+            taskTextView.snp.updateConstraints { make in
+                make.top.leading.trailing.equalToSuperview()
+                make.width.equalToSuperview()
+                make.height.greaterThanOrEqualTo(120)
+            }
+        }
+        
+        if UIDevice.current.orientation.isLandscape {
+            tableView.isHidden = true
+            removeButton.isHidden = true
+            
+            taskTextView.snp.updateConstraints { make in
+                make.top.leading.trailing.equalToSuperview()
+                make.width.equalToSuperview()
+                make.height.greaterThanOrEqualTo(view.bounds.height)
+            }
+        }
+    }
+    
     // MARK: - setupNavigationBar
     private func setupNavigationBar() {
         let navigationItem = UINavigationItem()

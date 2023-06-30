@@ -162,7 +162,7 @@ final class MainViewController: UIViewController {
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
             make.bottom.equalToSuperview()
         }
         
@@ -175,12 +175,14 @@ final class MainViewController: UIViewController {
     
     private func loadTodoItems() {
         let fileCache = FileCache.shared
-        let item1 = TodoItem(text: "buy cheese", priority: .regular, isDone: false)
-        let item2 = TodoItem(text: "buy milk", priority: .high, isDone: false)
-        let item3 = TodoItem(text: "buy bread", priority: .low, isDone: true)
-        fileCache.addTask(item1)
-        fileCache.addTask(item2)
-        fileCache.addTask(item3)
+        for _ in 0..<5 {
+            let item1 = TodoItem(text: "buy cheese", priority: .regular, isDone: false)
+            let item2 = TodoItem(text: "buy milk", priority: .high, isDone: false)
+            let item3 = TodoItem(text: "buy bread", priority: .low, isDone: true)
+            fileCache.addTask(item1)
+            fileCache.addTask(item2)
+            fileCache.addTask(item3)
+        }
         items = fileCache.todoItems
     }
     
