@@ -12,6 +12,7 @@ import FileCache
 
 final class TaskTableViewCell: UITableViewCell {
     
+    // MARK: - Variables
     static let identifier = "TaskTableViewCell"
     var currentItem: TodoItem!
     var currentItemIndexPath: IndexPath!
@@ -153,12 +154,15 @@ final class TaskTableViewCell: UITableViewCell {
         
     }
     
+    // MARK: - Interaction andling
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
         markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
         delegate?.changeItemCompleteness(indexPath: currentItemIndexPath)
     }
     
+    
+    // MARK: - Configuring the cell
     func configureCell(with item: TodoItem, at indexPath: IndexPath) {
         currentItem = item
         currentItemIndexPath = indexPath

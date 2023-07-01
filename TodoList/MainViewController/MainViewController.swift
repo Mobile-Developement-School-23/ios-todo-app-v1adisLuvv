@@ -12,6 +12,7 @@ import FileCache
 
 final class MainViewController: UIViewController {
     
+    // MARK: - Variables
     private var items: [TodoItem] = []
     private var lastSelectedIndexPath: IndexPath?
     private var showCompletedItems = false {
@@ -102,7 +103,9 @@ final class MainViewController: UIViewController {
         view.backgroundColor = ColorScheme.mainPrimaryBackground
         return view
     }()
-
+    
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -119,6 +122,8 @@ final class MainViewController: UIViewController {
         DDLogInfo("viewDidLoad finished")
     }
     
+    
+    // MARK: - Functions from viewDidLoad
     private func setupLumberack() {
         DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
 
@@ -128,6 +133,24 @@ final class MainViewController: UIViewController {
         DDLog.add(fileLogger)
     }
     
+    private func loadTodoItems() {
+        let fileCache = FileCache.shared
+        let item1 = TodoItem(text: "buy cheese", priority: .regular, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
+        let item2 = TodoItem(text: "buy water", priority: .high, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
+        let item3 = TodoItem(text: "buy milk", priority: .high, isDone: false)
+        let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
+        let item5 = TodoItem(text: "buy apples", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
+        fileCache.addTask(item1)
+        fileCache.addTask(item2)
+        fileCache.addTask(item3)
+        fileCache.addTask(item4)
+        fileCache.addTask(item5)
+        
+        items = fileCache.todoItems
+    }
+    
+    
+    // MARK: - Setup header and footer
     private func createHeader() {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40))
         headerView.backgroundColor = ColorScheme.mainPrimaryBackground
@@ -196,22 +219,6 @@ final class MainViewController: UIViewController {
         }
     }
     
-    private func loadTodoItems() {
-        let fileCache = FileCache.shared
-        let item1 = TodoItem(text: "buy cheese", priority: .regular, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
-        let item2 = TodoItem(text: "buy cheese fassst", priority: .high, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
-        let item3 = TodoItem(text: "buy milk", priority: .high, isDone: false)
-        let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
-        let item5 = TodoItem(text: "buy cheese fassst", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
-        fileCache.addTask(item1)
-        fileCache.addTask(item2)
-        fileCache.addTask(item3)
-        fileCache.addTask(item4)
-        fileCache.addTask(item5)
-        
-        items = fileCache.todoItems
-    }
-    
     // MARK: - setupNavigationBar
     private func setupNavigationBar() {
         title = "My Tasks"
@@ -244,6 +251,7 @@ final class MainViewController: UIViewController {
 
 }
 
+// MARK: - UITableViewDelegate extension
 extension MainViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -365,6 +373,7 @@ extension MainViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource extension
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if showCompletedItems {
@@ -450,6 +459,7 @@ extension MainViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - PassDataBackDelegate extension
 extension MainViewController: PassDataBackDelegate {
     func updateExistingItem(_ item: TodoItem) {
         if let lastSelectedIndexPath = lastSelectedIndexPath {
@@ -489,6 +499,7 @@ extension MainViewController: PassDataBackDelegate {
     }
 }
 
+// MARK: - Other functions extension
 extension MainViewController {
     private func updateCompletedLabel() {
         
@@ -500,12 +511,6 @@ extension MainViewController {
     
     private func changeItemPriority(indexPath: IndexPath, to priority: Priority) {
         items[indexPath.row].priority = priority
-        tableView.reloadData()
-    }
-    
-    private func changeItemCompleteness(indexPath: IndexPath, to isDone: Bool) {
-        items[indexPath.row].isDone.toggle()
-        updateCompletedLabel()
         tableView.reloadData()
     }
 }

@@ -13,9 +13,9 @@ final class DetailViewController: UIViewController {
     
     // MARK: - Variables
     weak var delegate: PassDataBackDelegate?
-    private let fileName = "firstTodoItem" // file where the TodoItem will be saved
     
     private let currentItem: TodoItem?
+    private var showCalendar = false
     
     private var id: String?
     private var text: String?
@@ -26,7 +26,6 @@ final class DetailViewController: UIViewController {
         }
     }
     
-    private var showCalendar = false
 
     // MARK: - Constants
     private struct Constants {
@@ -116,6 +115,8 @@ final class DetailViewController: UIViewController {
         return button
     }()
     
+    
+    // MARK: - Lifecycle
     init(currentItem: TodoItem? = nil) {
         self.currentItem = currentItem
         super.init(nibName: nil, bundle: nil)
@@ -147,6 +148,7 @@ final class DetailViewController: UIViewController {
         setupConstraints()
     }
     
+    // MARK: - Support landscape orientation
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
