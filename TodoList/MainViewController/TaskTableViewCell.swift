@@ -7,9 +7,12 @@
 
 import UIKit
 import SnapKit
+import CocoaLumberjackSwift
+import FileCache
 
 final class TaskTableViewCell: UITableViewCell {
     
+    // MARK: - Variables
     static let identifier = "TaskTableViewCell"
     var currentItem: TodoItem!
     var currentItemIndexPath: IndexPath!
@@ -151,12 +154,15 @@ final class TaskTableViewCell: UITableViewCell {
         
     }
     
+    // MARK: - Interaction andling
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
         markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
-        delegate?.toggledIsDoneInCell(indexPath: currentItemIndexPath)
+        delegate?.changeItemCompleteness(indexPath: currentItemIndexPath)
     }
     
+    
+    // MARK: - Configuring the cell
     func configureCell(with item: TodoItem, at indexPath: IndexPath) {
         currentItem = item
         currentItemIndexPath = indexPath
@@ -217,5 +223,7 @@ final class TaskTableViewCell: UITableViewCell {
             symbolAndTaskLabelStackView.addArrangedSubview(labelAndDeadlineStackView)
             
         }
+        
+        DDLogInfo("TableViewCell configured")
     }
 }

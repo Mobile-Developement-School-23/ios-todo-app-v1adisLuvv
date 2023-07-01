@@ -7,14 +7,15 @@
 
 import UIKit
 import SnapKit
+import FileCache
 
 final class DetailViewController: UIViewController {
     
     // MARK: - Variables
     weak var delegate: PassDataBackDelegate?
-    private let fileName = "firstTodoItem" // file where the TodoItem will be saved
     
     private let currentItem: TodoItem?
+    private var showCalendar = false
     
     private var id: String?
     private var text: String?
@@ -25,7 +26,6 @@ final class DetailViewController: UIViewController {
         }
     }
     
-    private var showCalendar = false
 
     // MARK: - Constants
     private struct Constants {
@@ -115,6 +115,8 @@ final class DetailViewController: UIViewController {
         return button
     }()
     
+    
+    // MARK: - Lifecycle
     init(currentItem: TodoItem? = nil) {
         self.currentItem = currentItem
         super.init(nibName: nil, bundle: nil)
@@ -146,6 +148,7 @@ final class DetailViewController: UIViewController {
         setupConstraints()
     }
     
+    // MARK: - Support landscape orientation
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -233,7 +236,7 @@ final class DetailViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         let item = TodoItem(id: id ?? UUID().uuidString, text: text ?? "", priority: priority, deadline: deadline)
-        if let _ = currentItem {
+        if currentItem != nil {
             delegate?.updateExistingItem(item)
         } else {
             delegate?.createNewItem(item)
@@ -242,7 +245,7 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func didTapRemoveButton() {
-        if let _ = currentItem {
+        if currentItem != nil {
             delegate?.removeExistingItem()
             dismiss(animated: true)
         } else {
@@ -415,7 +418,7 @@ extension DetailViewController {
     }
     
     @objc func keyboardWillHide(notification: Notification) {
-        if let _ = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue != nil {
             scrollView.snp.updateConstraints { make in
                 make.bottom.equalTo(view.safeAreaLayoutGuide)
             }

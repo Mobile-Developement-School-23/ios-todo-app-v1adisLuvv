@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import CocoaLumberjackSwift
 
 final class DeadlineTableViewCell: UITableViewCell {
 
@@ -49,10 +50,10 @@ final class DeadlineTableViewCell: UITableViewCell {
     }()
     
     private lazy var deadlineSwitch: UISwitch = {
-        let sw = UISwitch()
-        sw.onTintColor = ColorScheme.green
-        sw.addTarget(self, action: #selector(didTapDeadlineSwitch), for: .valueChanged)
-        return sw
+        let swicther = UISwitch()
+        swicther.onTintColor = ColorScheme.green
+        swicther.addTarget(self, action: #selector(didTapDeadlineSwitch), for: .valueChanged)
+        return swicther
     }()
     
     private lazy var stackView: UIStackView = {

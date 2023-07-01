@@ -7,9 +7,12 @@
 
 import UIKit
 import SnapKit
+import CocoaLumberjackSwift
+import FileCache
 
 final class MainViewController: UIViewController {
     
+    // MARK: - Variables
     private var items: [TodoItem] = []
     private var lastSelectedIndexPath: IndexPath?
     private var showCompletedItems = false {
@@ -100,7 +103,9 @@ final class MainViewController: UIViewController {
         view.backgroundColor = ColorScheme.mainPrimaryBackground
         return view
     }()
-
+    
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -112,8 +117,40 @@ final class MainViewController: UIViewController {
         setupConstraints()
         setupNavigationBar()
         updateCompletedLabel()
+        setupLumberack()
+        
+        DDLogInfo("viewDidLoad finished")
     }
     
+    
+    // MARK: - Functions from viewDidLoad
+    private func setupLumberack() {
+        DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
+
+        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
+        fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        DDLog.add(fileLogger)
+    }
+    
+    private func loadTodoItems() {
+        let fileCache = FileCache.shared
+        let item1 = TodoItem(text: "buy cheese", priority: .regular, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
+        let item2 = TodoItem(text: "buy water", priority: .high, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
+        let item3 = TodoItem(text: "buy milk", priority: .high, isDone: false)
+        let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
+        let item5 = TodoItem(text: "buy apples", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
+        fileCache.addTask(item1)
+        fileCache.addTask(item2)
+        fileCache.addTask(item3)
+        fileCache.addTask(item4)
+        fileCache.addTask(item5)
+        
+        items = fileCache.todoItems
+    }
+    
+    
+    // MARK: - Setup header and footer
     private func createHeader() {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40))
         headerView.backgroundColor = ColorScheme.mainPrimaryBackground
@@ -132,6 +169,8 @@ final class MainViewController: UIViewController {
         }
         
         tableView.tableHeaderView = headerView
+        
+        DDLogInfo("tableHeaderView finished")
     }
     
     private func createFooter() {
@@ -160,6 +199,8 @@ final class MainViewController: UIViewController {
         
         
         tableView.tableFooterView = footerView
+        
+        DDLogInfo("tableFooterView finished")
     }
     
     // MARK: - setupConstraints
@@ -176,22 +217,6 @@ final class MainViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-54)
             make.width.height.equalTo(44)
         }
-    }
-    
-    private func loadTodoItems() {
-        let fileCache = FileCache.shared
-        let item1 = TodoItem(text: "buy cheese", priority: .regular, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
-        let item2 = TodoItem(text: "buy cheese fassst", priority: .high, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
-        let item3 = TodoItem(text: "buy milk", priority: .high, isDone: false)
-        let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
-        let item5 = TodoItem(text: "buy cheese fassst", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
-        fileCache.addTask(item1)
-        fileCache.addTask(item2)
-        fileCache.addTask(item3)
-        fileCache.addTask(item4)
-        fileCache.addTask(item5)
-        
-        items = fileCache.todoItems
     }
     
     // MARK: - setupNavigationBar
@@ -220,10 +245,13 @@ final class MainViewController: UIViewController {
         showCompletedItems.toggle()
         tableView.reloadData()
         view.layoutIfNeeded()
+        
+        DDLogInfo("Show/hide button toggled")
     }
 
 }
 
+// MARK: - UITableViewDelegate extension
 extension MainViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -254,8 +282,98 @@ extension MainViewController: UITableViewDelegate {
             cell.layer.mask = shape
         }
     }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        let identifier = "\(indexPath.row)" as NSCopying
+        let configuration = UIContextMenuConfiguration(identifier: identifier, previewProvider: nil) { [weak self] _ in
+            guard let self = self else { DDLogError("self does not exist"); return UIMenu() }
+            
+            let checkAsCompletedAction = UIAction(title: "Complete", image: Symbols.checkedTaskButtonSymbol) { _ in
+                if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
+                    self.changeItemCompleteness(indexPath: indexPath)
+                    let item = self.items[indexPath.row]
+                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                    self.updateCompletedLabel()
+                }
+            }
+            
+            let checkAsIncompletedAction = UIAction(title: "Incomplete", image: Symbols.regularTaskButtonSymbol) { _ in
+                if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
+                    self.changeItemCompleteness(indexPath: indexPath)
+                    let item = self.items[indexPath.row]
+                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                    self.updateCompletedLabel()
+                }
+            }
+            
+            let makeImportantAction = UIAction(title: "Mark as important", image: Symbols.doubleExclamationMarkSymbol) { _ in
+                self.changeItemPriority(indexPath: indexPath, to: .high)
+            }
+            
+            let makeRegularAction = UIAction(title: "Make as regular") { _ in
+                self.changeItemPriority(indexPath: indexPath, to: .regular)
+            }
+            
+            let makeLowAction = UIAction(title: "Make as unimportant", image: Symbols.arrowDownSymbol) { _ in
+                self.changeItemPriority(indexPath: indexPath, to: .low)
+            }
+            
+            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                self.lastSelectedIndexPath = indexPath
+                self.removeExistingItem()
+                
+                DDLogInfo("delete action used")
+            }
+            
+            var children: [UIMenuElement] = []
+            
+            if self.items[indexPath.row].isDone {
+                children.append(checkAsIncompletedAction)
+            } else {
+                children.append(checkAsCompletedAction)
+            }
+            
+            if self.items[indexPath.row].priority == .low {
+                children.append(makeImportantAction)
+                children.append(makeRegularAction)
+            } else if self.items[indexPath.row].priority == .regular {
+                children.append(makeImportantAction)
+                children.append(makeLowAction)
+            } else {
+                children.append(makeRegularAction)
+                children.append(makeLowAction)
+            }
+            
+            children.append(deleteAction)
+            
+            return UIMenu(children: children)
+        }
+        
+        return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+        
+        guard let identifier = configuration.identifier as? String,
+              let index = Int(identifier),
+              tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TaskTableViewCell != nil
+        else { return }
+        
+        let selectedItem = items[index]
+        lastSelectedIndexPath = tableView.indexPathForSelectedRow
+        
+        let detailVC = DetailViewController(currentItem: selectedItem)
+        detailVC.delegate = self
+        
+        animator.addCompletion { [weak self] in
+            guard let self = self else { return }
+            present(detailVC, animated: true)
+        }
+    }
 }
 
+// MARK: - UITableViewDataSource extension
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if showCompletedItems {
@@ -266,7 +384,10 @@ extension MainViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as? TaskTableViewCell else {
+            DDLogError("Cannot cast cell")
+            return UITableViewCell()
+        }
         cell.delegate = self
         
         var filteredItems: [TodoItem]
@@ -286,13 +407,15 @@ extension MainViewController: UITableViewDataSource {
         
         let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
-                guard let self = self else { return }
-                self.toggledIsDoneInCell(indexPath: indexPath)
+                guard let self = self else { DDLogError("self does not exist"); return }
+                self.changeItemCompleteness(indexPath: indexPath)
                 let item = self.items[indexPath.row]
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                 self.updateCompletedLabel()
             }
             completionHandler(true)
+            
+            DDLogInfo("done action used")
         }
         
         doneAction.backgroundColor = ColorScheme.green
@@ -304,7 +427,7 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let infoAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
-            guard let self = self else { return }
+            guard let self = self else { DDLogError("self does not exist"); return }
             let selectedItem = self.items[indexPath.row]
             self.lastSelectedIndexPath = self.tableView.indexPathForSelectedRow
             self.tableView.deselectRow(at: indexPath, animated: true)
@@ -313,16 +436,20 @@ extension MainViewController: UITableViewDataSource {
             detailVC.delegate = self
             self.present(detailVC, animated: true)
             completionHandler(true)
+            
+            DDLogInfo("info action used")
         }
         
         infoAction.backgroundColor = ColorScheme.lightGray
         infoAction.image = Symbols.infoTrailingSwipeSymbol
         
         let deleteAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
-            guard let self = self else { return }
+            guard let self = self else { DDLogError("self does not exist"); return }
             lastSelectedIndexPath = indexPath
             self.removeExistingItem()
             completionHandler(true)
+            
+            DDLogInfo("delete action used")
         }
         
         deleteAction.backgroundColor = ColorScheme.red
@@ -332,6 +459,7 @@ extension MainViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - PassDataBackDelegate extension
 extension MainViewController: PassDataBackDelegate {
     func updateExistingItem(_ item: TodoItem) {
         if let lastSelectedIndexPath = lastSelectedIndexPath {
@@ -347,7 +475,7 @@ extension MainViewController: PassDataBackDelegate {
         updateCompletedLabel()
     }
     
-    func toggledIsDoneInCell(indexPath: IndexPath) {
+    func changeItemCompleteness(indexPath: IndexPath) {
         items[indexPath.row].isDone.toggle()
         updateCompletedLabel()
         if showCompletedItems {
@@ -361,14 +489,17 @@ extension MainViewController: PassDataBackDelegate {
         tableView.deleteRows(at: [lastSelectedIndexPath], with: .left)
         if lastSelectedIndexPath.row == 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
-                guard let self = self else { return }
+                guard let self = self else { DDLogError("self does not exist"); return }
                 self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
             }
         }
         updateCompletedLabel()
+        
+        DDLogInfo("item removed")
     }
 }
 
+// MARK: - Other functions extension
 extension MainViewController {
     private func updateCompletedLabel() {
         
@@ -376,5 +507,10 @@ extension MainViewController {
             return count + (item.isDone ? 1 : 0)
         }
         completedLabel.text = "Completed - \(completedItems)"
+    }
+    
+    private func changeItemPriority(indexPath: IndexPath, to priority: Priority) {
+        items[indexPath.row].priority = priority
+        tableView.reloadData()
     }
 }
