@@ -1,14 +1,20 @@
+//
+//  FileCache.swift
+//  TodoList
+//
+//  Created by Vlad Boguzh on 2023-07-03.
+//
+
 import Foundation
 
-@available (iOS 16.0, *)
-public final class FileCache {
+final class FileCache {
     
-    public static let shared = FileCache()
+    static let shared = FileCache()
     private init() {}
     
-    public private(set) var todoItems: [TodoItem] = []
+    private(set) var todoItems: [TodoItem] = []
     
-    public func addTask(_ item: TodoItem) {
+    func addTask(_ item: TodoItem) {
         // rewrite if the ID exists
         if let index = todoItems.firstIndex(where: { $0.id == item.id }) {
             todoItems[index] = item
@@ -17,12 +23,12 @@ public final class FileCache {
         }
     }
     
-    public func removeTask(withID id: String) {
+    func removeTask(withID id: String) {
         // all ID's are unique so only item will be removed
         todoItems.removeAll { $0.id == id }
     }
     
-    public func saveJSONToFile(fileName: String) {
+    func saveJSONToFile(fileName: String) {
         let jsonItems = todoItems.map({ $0.json })
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: jsonItems)
@@ -32,7 +38,7 @@ public final class FileCache {
         }
     }
     
-    public func loadJSONFromFile(fileName: String) {
+    func loadJSONFromFile(fileName: String) {
         do {
             let jsonData = try Data(contentsOf: fileURL(fileName: fileName))
             let jsonItems = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] ?? []
@@ -43,7 +49,7 @@ public final class FileCache {
         }
     }
     
-    public func saveCSVToFile(fileName: String) {
+    func saveCSVToFile(fileName: String) {
         let csvString = todoItems.map { $0.csv }.joined(separator: "\n")
         do {
             try csvString.write(to: fileURL(fileName: fileName), atomically: true, encoding: .utf8)
@@ -52,7 +58,7 @@ public final class FileCache {
         }
     }
     
-    public func loadCSVFromFile(fileName: String) {
+    func loadCSVFromFile(fileName: String) {
         do {
             let csvString = try String(contentsOf: fileURL(fileName: fileName), encoding: .utf8)
             let csvRows = csvString.components(separatedBy: "\n")

@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import FileCache
 
 final class PriorityTableViewCell: UITableViewCell {
     

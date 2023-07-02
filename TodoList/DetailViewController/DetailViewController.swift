@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import FileCache
 
 final class DetailViewController: UIViewController {
     

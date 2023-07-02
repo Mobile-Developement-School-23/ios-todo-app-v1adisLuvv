@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import CocoaLumberjackSwift
 
 final class DeadlineTableViewCell: UITableViewCell {
 

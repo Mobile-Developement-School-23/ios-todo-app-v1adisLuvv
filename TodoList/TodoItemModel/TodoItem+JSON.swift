@@ -1,13 +1,13 @@
 //
-//  File.swift
-//  
+//  TodoItem+JSON.swift
+//  TodoList
 //
-//  Created by Vlad Boguzh on 2023-07-01.
+//  Created by Vlad Boguzh on 2023-07-03.
 //
 
 import Foundation
 
-public extension TodoItem {
+extension TodoItem {
     static func parse(json: Any) -> TodoItem? {
         
         guard let jsonDict = json as? [String: Any] else { return nil }
