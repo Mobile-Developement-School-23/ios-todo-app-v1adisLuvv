@@ -235,8 +235,8 @@ final class DetailViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         let item = TodoItem(id: id ?? UUID().uuidString, text: text ?? "", priority: priority, deadline: deadline)
-        if currentItem != nil {
-            delegate?.updateExistingItem(item)
+        if let currentItem = currentItem {
+            delegate?.updateExistingItem(withID: currentItem.id, changeTo: item)
         } else {
             delegate?.createNewItem(item)
         }
@@ -244,8 +244,8 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func didTapRemoveButton() {
-        if currentItem != nil {
-            delegate?.removeExistingItem()
+        if let currentItem = currentItem {
+            delegate?.removeExistingItem(itemID: currentItem.id)
             dismiss(animated: true)
         } else {
             didTapSaveButton()

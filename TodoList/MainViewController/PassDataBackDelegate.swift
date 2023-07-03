@@ -8,8 +8,8 @@
 import Foundation
 
 protocol PassDataBackDelegate: AnyObject {
-    func updateExistingItem(_ item: TodoItem)
+    func updateExistingItem(withID itemID: String, changeTo item: TodoItem)
     func createNewItem(_ item: TodoItem)
-    func changeItemCompleteness(indexPath: IndexPath)
-    func removeExistingItem()
+    func changeItemCompleteness(itemID: String)
+    func removeExistingItem(itemID: String)
 }

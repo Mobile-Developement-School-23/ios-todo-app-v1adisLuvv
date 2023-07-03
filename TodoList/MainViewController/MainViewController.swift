@@ -269,8 +269,8 @@ extension MainViewController: UITableViewDelegate {
             
             let checkAsCompletedAction = UIAction(title: "Complete", image: Symbols.checkedTaskButtonSymbol) { _ in
                 if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
-                    self.changeItemCompleteness(indexPath: indexPath)
                     let item = self.items[indexPath.row]
+                    self.changeItemCompleteness(itemID: item.id)
                     cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                     self.updateCompletedLabel()
                 }
@@ -278,28 +278,32 @@ extension MainViewController: UITableViewDelegate {
             
             let checkAsIncompletedAction = UIAction(title: "Incomplete", image: Symbols.regularTaskButtonSymbol) { _ in
                 if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
-                    self.changeItemCompleteness(indexPath: indexPath)
                     let item = self.items[indexPath.row]
+                    self.changeItemCompleteness(itemID: item.id)
                     cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                     self.updateCompletedLabel()
                 }
             }
             
             let makeImportantAction = UIAction(title: "Mark as important", image: Symbols.doubleExclamationMarkSymbol) { _ in
-                self.changeItemPriority(indexPath: indexPath, to: .high)
+                let item = self.items[indexPath.row]
+                self.changeItemPriority(withID: item.id, to: .high)
             }
             
             let makeRegularAction = UIAction(title: "Make as regular") { _ in
-                self.changeItemPriority(indexPath: indexPath, to: .regular)
+                let item = self.items[indexPath.row]
+                self.changeItemPriority(withID: item.id, to: .regular)
             }
             
             let makeLowAction = UIAction(title: "Make as unimportant", image: Symbols.arrowDownSymbol) { _ in
-                self.changeItemPriority(indexPath: indexPath, to: .low)
+                let item = self.items[indexPath.row]
+                self.changeItemPriority(withID: item.id, to: .low)
             }
             
             let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                let item = self.items[indexPath.row]
                 self.lastSelectedIndexPath = indexPath
-                self.removeExistingItem()
+                self.removeExistingItem(itemID: item.id)
             }
             
             var children: [UIMenuElement] = []
@@ -381,8 +385,8 @@ extension MainViewController: UITableViewDataSource {
         let doneAction = UIContextualAction(style: .normal, title: "Mark as Done") { [weak self] _, _, completionHandler in
             if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
                 guard let self = self else { return }
-                self.changeItemCompleteness(indexPath: indexPath)
                 let item = self.items[indexPath.row]
+                self.changeItemCompleteness(itemID: item.id)
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
                 self.updateCompletedLabel()
             }
@@ -415,7 +419,8 @@ extension MainViewController: UITableViewDataSource {
         let deleteAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
             guard let self = self else { return }
             lastSelectedIndexPath = indexPath
-            self.removeExistingItem()
+            let selectedItem = self.items[indexPath.row]
+            self.removeExistingItem(itemID: selectedItem.id)
             completionHandler(true)
         }
         
@@ -428,9 +433,9 @@ extension MainViewController: UITableViewDataSource {
 
 // MARK: - PassDataBackDelegate extension
 extension MainViewController: PassDataBackDelegate {
-    func updateExistingItem(_ item: TodoItem) {
-        if let lastSelectedIndexPath = lastSelectedIndexPath {
-            items[lastSelectedIndexPath.row] = item
+    func updateExistingItem(withID itemID: String, changeTo item: TodoItem) {
+        if let index = items.firstIndex(where: { $0.id == itemID }) {
+            items[index] = item
             tableView.reloadData()
             updateCompletedLabel()
         }
@@ -442,19 +447,19 @@ extension MainViewController: PassDataBackDelegate {
         updateCompletedLabel()
     }
     
-    func changeItemCompleteness(indexPath: IndexPath) {
-        items[indexPath.row].isDone.toggle()
-        updateCompletedLabel()
-        if showCompletedItems {
+    func changeItemCompleteness(itemID: String) {
+        if let index = items.firstIndex(where: { $0.id == itemID }) {
+            items[index].isDone.toggle()
             tableView.reloadData()
+            updateCompletedLabel()
         }
     }
     
-    func removeExistingItem() {
-        guard let lastSelectedIndexPath = lastSelectedIndexPath else { return }
-        items.remove(at: lastSelectedIndexPath.row)
-        tableView.deleteRows(at: [lastSelectedIndexPath], with: .left)
-        if lastSelectedIndexPath.row == 0 {
+    func removeExistingItem(itemID: String) {
+        guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
+        items.remove(at: index)
+        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
+        if index == 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
                 guard let self = self else { return }
                 self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
@@ -467,15 +472,17 @@ extension MainViewController: PassDataBackDelegate {
 // MARK: - Other functions extension
 extension MainViewController {
     private func updateCompletedLabel() {
-        
         let completedItems = items.reduce(0) { count, item in
             return count + (item.isDone ? 1 : 0)
         }
         completedLabel.text = "Completed - \(completedItems)"
     }
     
-    private func changeItemPriority(indexPath: IndexPath, to priority: Priority) {
-        items[indexPath.row].priority = priority
-        tableView.reloadData()
+    private func changeItemPriority(withID itemID: String, to priority: Priority) {
+        if let index = items.firstIndex(where: { $0.id == itemID }) {
+            items[index].priority = priority
+            tableView.reloadData()
+            updateCompletedLabel()
+        }
     }
 }

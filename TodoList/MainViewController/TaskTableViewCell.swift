@@ -13,7 +13,6 @@ final class TaskTableViewCell: UITableViewCell {
     // MARK: - Variables
     static let identifier = "TaskTableViewCell"
     var currentItem: TodoItem!
-    var currentItemIndexPath: IndexPath!
     
     weak var delegate: PassDataBackDelegate?
     
@@ -156,14 +155,13 @@ final class TaskTableViewCell: UITableViewCell {
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
         markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
-        delegate?.changeItemCompleteness(indexPath: currentItemIndexPath)
+        delegate?.changeItemCompleteness(itemID: currentItem.id)
     }
     
     
     // MARK: - Configuring the cell
     func configureCell(with item: TodoItem, at indexPath: IndexPath) {
         currentItem = item
-        currentItemIndexPath = indexPath
         
         taskLabel.text = item.text
         if let deadline = item.deadline {
