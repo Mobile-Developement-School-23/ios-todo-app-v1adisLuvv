@@ -12,95 +12,31 @@ final class MainViewController: UIViewController {
     
     // MARK: - Variables
     private var items: [TodoItem] = []
-    private var showCompletedItems = false {
-        didSet {
-            showHideButton.setTitle(showCompletedItems ? "Hide" : "Show", for: .normal)
-        }
-    }
     
     // MARK: - UI Elements
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16 + 28 + 12, bottom: 0, right: 0)
-        tableView.register(TaskTableViewCell.self, forCellReuseIdentifier: TaskTableViewCell.identifier)
+    private lazy var tableView: TasksTableView = {
+        let tableView = TasksTableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = ColorScheme.mainPrimaryBackground
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(tableView)
         return tableView
     }()
     
-    private lazy var addButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.backgroundColor = ColorScheme.blue
-        button.layer.cornerRadius = 44 / 2
-        button.layer.masksToBounds = false // allow the shadow to be visible outside the bounds
-        button.layer.shadowColor = UIColor.systemBlue.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowRadius = 44 / 8
-        let plusImage = UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .bold))
-        button.setImage(plusImage, for: .normal)
-        button.tintColor = ColorScheme.white
-        button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        return button
+    private lazy var addButton: AddButton = {
+        let addButton = AddButton()
+        addButton.addTargetForAddButton(self, action: #selector(didTapAddButton))
+        return addButton
     }()
     
-    
-    // MARK: - Header Elements
-    private lazy var completedLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Completed - 0"
-        label.textColor = ColorScheme.tertiaryLabel
-        label.font = .systemFont(ofSize: 15)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private lazy var headerView: HeaderView = {
+        let headerView = HeaderView(tableViewWidth: tableView.bounds.width, headerHeight: 40)
+        headerView.addTargetForShowHideButton(self, action: #selector(didTapShowHideButton))
+        return headerView
     }()
     
-    private lazy var showHideButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(showCompletedItems ? "Hide" : "Show", for: .normal)
-        button.setTitleColor(ColorScheme.blue, for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 15)
-        button.addTarget(self, action: #selector(didTapShowHideButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+    private lazy var footerView: FooterView = {
+        let footerView = FooterView(tableViewWidth: tableView.bounds.height, footerHeight: 56 + 86)
+        return footerView
     }()
-    
-    
-    // MARK: - Footer Elements
-    private lazy var newLabel: UILabel = {
-        let label = UILabel()
-        label.text = "New"
-        label.textColor = ColorScheme.tertiaryLabel
-        label.textAlignment = .left
-        label.font = .systemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var whiteView: UIView = {
-        let view = UIView()
-        view.backgroundColor = ColorScheme.secondaryBackground
-        view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        view.layer.cornerRadius = 16
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapAddButton))
-        view.addGestureRecognizer(tap)
-        view.isUserInteractionEnabled = true
-        view.addSubview(newLabel)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private lazy var clearView: UIView = {
-        let view = UIView()
-        view.backgroundColor = ColorScheme.mainPrimaryBackground
-        return view
-    }()
-    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -108,12 +44,16 @@ final class MainViewController: UIViewController {
 
         view.backgroundColor = ColorScheme.mainPrimaryBackground
         
+        tableView.tableHeaderView = headerView
+        tableView.tableFooterView = footerView
+        
+        view.addSubview(tableView)
+        view.addSubview(addButton)
+        
         loadTodoItems()
-        createHeader()
-        createFooter()
         setupConstraints()
         setupNavigationBar()
-        updateCompletedLabel()
+        headerView.updateCompletedLabel(items: items)
     }
     
     private func loadTodoItems() {
@@ -130,56 +70,6 @@ final class MainViewController: UIViewController {
         fileCache.addTask(item5)
         
         items = fileCache.todoItems
-    }
-    
-    
-    // MARK: - Setup header and footer
-    private func createHeader() {
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40))
-        headerView.backgroundColor = ColorScheme.mainPrimaryBackground
-        
-        headerView.addSubview(completedLabel)
-        headerView.addSubview(showHideButton)
-        
-        completedLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
-            make.centerY.equalToSuperview()
-        }
-        
-        showHideButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16)
-            make.centerY.equalToSuperview()
-        }
-        
-        tableView.tableHeaderView = headerView
-    }
-    
-    private func createFooter() {
-        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 56 + 86))
-        footerView.backgroundColor = ColorScheme.mainPrimaryBackground
-        
-        footerView.addSubview(whiteView)
-        footerView.addSubview(clearView)
-        
-        newLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16 + 28 + 12)
-            make.centerY.equalToSuperview()
-        }
-        
-        whiteView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalToSuperview()
-            make.height.equalTo(56)
-        }
-        
-        clearView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(whiteView.snp.bottom)
-            make.height.equalTo(86)
-        }
-        
-        
-        tableView.tableFooterView = footerView
     }
     
     // MARK: - setupConstraints
@@ -221,7 +111,7 @@ final class MainViewController: UIViewController {
     }
     
     @objc private func didTapShowHideButton() {
-        showCompletedItems.toggle()
+        headerView.showCompletedItems.toggle()
         tableView.reloadData()
         view.layoutIfNeeded()
     }
@@ -270,7 +160,7 @@ extension MainViewController: UITableViewDelegate {
                     let item = self.items[indexPath.row]
                     self.changeItemCompleteness(itemID: item.id)
                     cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
-                    self.updateCompletedLabel()
+                    self.headerView.updateCompletedLabel(items: self.items)
                 }
             }
             
@@ -279,7 +169,7 @@ extension MainViewController: UITableViewDelegate {
                     let item = self.items[indexPath.row]
                     self.changeItemCompleteness(itemID: item.id)
                     cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
-                    self.updateCompletedLabel()
+                    self.headerView.updateCompletedLabel(items: self.items)
                 }
             }
             
@@ -352,7 +242,7 @@ extension MainViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource extension
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if showCompletedItems {
+        if headerView.showCompletedItems {
             return items.count
         } else {
             return items.filter { !$0.isDone }.count
@@ -364,7 +254,7 @@ extension MainViewController: UITableViewDataSource {
         cell.delegate = self
         
         var filteredItems: [TodoItem]
-        if showCompletedItems {
+        if headerView.showCompletedItems {
             filteredItems = items
         } else {
             filteredItems = items.filter { !$0.isDone }
@@ -384,7 +274,7 @@ extension MainViewController: UITableViewDataSource {
                 let item = self.items[indexPath.row]
                 self.changeItemCompleteness(itemID: item.id)
                 cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
-                self.updateCompletedLabel()
+                self.headerView.updateCompletedLabel(items: self.items)
             }
             completionHandler(true)
         }
@@ -431,21 +321,21 @@ extension MainViewController: PassDataBackDelegate {
         if let index = items.firstIndex(where: { $0.id == itemID }) {
             items[index] = item
             tableView.reloadData()
-            updateCompletedLabel()
+            headerView.updateCompletedLabel(items: items)
         }
     }
     
     func createNewItem(_ item: TodoItem) {
         items.append(item)
         tableView.reloadData()
-        updateCompletedLabel()
+        headerView.updateCompletedLabel(items: items)
     }
     
     func changeItemCompleteness(itemID: String) {
         if let index = items.firstIndex(where: { $0.id == itemID }) {
             items[index].isDone.toggle()
             tableView.reloadData()
-            updateCompletedLabel()
+            headerView.updateCompletedLabel(items: items)
         }
     }
     
@@ -459,24 +349,18 @@ extension MainViewController: PassDataBackDelegate {
                 self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
             }
         }
-        updateCompletedLabel()
+        headerView.updateCompletedLabel(items: items)
     }
 }
 
 // MARK: - Other functions extension
 extension MainViewController {
-    private func updateCompletedLabel() {
-        let completedItems = items.reduce(0) { count, item in
-            return count + (item.isDone ? 1 : 0)
-        }
-        completedLabel.text = "Completed - \(completedItems)"
-    }
     
     private func changeItemPriority(withID itemID: String, to priority: Priority) {
         if let index = items.firstIndex(where: { $0.id == itemID }) {
             items[index].priority = priority
             tableView.reloadData()
-            updateCompletedLabel()
+            headerView.updateCompletedLabel(items: items)
         }
     }
 }
