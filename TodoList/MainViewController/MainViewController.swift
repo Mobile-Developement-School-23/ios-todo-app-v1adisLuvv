@@ -12,7 +12,6 @@ final class MainViewController: UIViewController {
     
     // MARK: - Variables
     private var items: [TodoItem] = []
-    private var lastSelectedIndexPath: IndexPath?
     private var showCompletedItems = false {
         didSet {
             showHideButton.setTitle(showCompletedItems ? "Hide" : "Show", for: .normal)
@@ -234,7 +233,6 @@ extension MainViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = items[indexPath.row]
-        lastSelectedIndexPath = tableView.indexPathForSelectedRow
         tableView.deselectRow(at: indexPath, animated: true)
         
         let detailVC = DetailViewController(currentItem: selectedItem)
@@ -302,7 +300,6 @@ extension MainViewController: UITableViewDelegate {
             
             let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
                 let item = self.items[indexPath.row]
-                self.lastSelectedIndexPath = indexPath
                 self.removeExistingItem(itemID: item.id)
             }
             
@@ -341,7 +338,6 @@ extension MainViewController: UITableViewDelegate {
         else { return }
         
         let selectedItem = items[index]
-        lastSelectedIndexPath = tableView.indexPathForSelectedRow
         
         let detailVC = DetailViewController(currentItem: selectedItem)
         detailVC.delegate = self
@@ -404,7 +400,6 @@ extension MainViewController: UITableViewDataSource {
         let infoAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
             guard let self = self else { return }
             let selectedItem = self.items[indexPath.row]
-            self.lastSelectedIndexPath = self.tableView.indexPathForSelectedRow
             self.tableView.deselectRow(at: indexPath, animated: true)
             
             let detailVC = DetailViewController(currentItem: selectedItem)
@@ -418,7 +413,6 @@ extension MainViewController: UITableViewDataSource {
         
         let deleteAction = UIContextualAction(style: .normal, title: "Info") { [weak self] _, _, completionHandler in
             guard let self = self else { return }
-            lastSelectedIndexPath = indexPath
             let selectedItem = self.items[indexPath.row]
             self.removeExistingItem(itemID: selectedItem.id)
             completionHandler(true)

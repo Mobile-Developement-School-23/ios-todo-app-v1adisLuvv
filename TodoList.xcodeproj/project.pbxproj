@@ -162,10 +162,10 @@
 			children = (
 				21028CF92A4F5C8500DA0951 /* MainViewController */,
 				21B845882A410E21007531DB /* DetailViewController */,
+				2167AA962A5223A1001627B1 /* TodoItemModel */,
+				2167AA972A5223B0001627B1 /* Persistence */,
 				2128192C2A4B5AF900B9DBF5 /* Resources */,
 				21B8457F2A410CAF007531DB /* SupportingFiles */,
-				2167AA972A5223B0001627B1 /* Persistence */,
-				2167AA962A5223A1001627B1 /* TodoItemModel */,
 			);
 			path = TodoList;
 			sourceTree = "<group>";
