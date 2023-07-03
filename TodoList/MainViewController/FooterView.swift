@@ -46,12 +46,12 @@ final class FooterView: UIView {
         self.tableViewWidth = tableViewWidth
         self.footerHeight = footerHeight
         super.init(frame: frame)
+        setupFooter()
     }
     
     convenience init(tableViewWidth: CGFloat, footerHeight: CGFloat) {
         let frame = CGRect(x: 0, y: 0, width: tableViewWidth, height: footerHeight)
         self.init(frame: frame, tableViewWidth: tableViewWidth, footerHeight: footerHeight)
-        setupFooter()
     }
     
     required init?(coder: NSCoder) {
@@ -85,5 +85,10 @@ final class FooterView: UIView {
             make.top.equalTo(whiteView.snp.bottom)
             make.height.equalTo(86)
         }
+    }
+    
+    func addTapGestureRecognizer(_ target: Any?, action: Selector) {
+        let tap = UITapGestureRecognizer(target: target, action: action)
+        whiteView.addGestureRecognizer(tap)
     }
 }

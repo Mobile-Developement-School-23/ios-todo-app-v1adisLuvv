@@ -41,12 +41,12 @@ final class HeaderView: UIView {
         self.tableViewWidth = tableViewWidth
         self.headerHeight = headerHeight
         super.init(frame: frame)
+        setupHeader()
     }
     
     convenience init(tableViewWidth: CGFloat, headerHeight: CGFloat) {
         let frame = CGRect(x: 0, y: 0, width: tableViewWidth, height: headerHeight)
         self.init(frame: frame, tableViewWidth: tableViewWidth, headerHeight: headerHeight)
-        setupHeader()
     }
     
     required init?(coder: NSCoder) {

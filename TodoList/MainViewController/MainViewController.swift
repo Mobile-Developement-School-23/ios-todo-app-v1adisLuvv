@@ -35,6 +35,7 @@ final class MainViewController: UIViewController {
     
     private lazy var footerView: FooterView = {
         let footerView = FooterView(tableViewWidth: tableView.bounds.height, footerHeight: 56 + 86)
+        footerView.addTapGestureRecognizer(self, action: #selector(didTapAddButton))
         return footerView
     }()
     
