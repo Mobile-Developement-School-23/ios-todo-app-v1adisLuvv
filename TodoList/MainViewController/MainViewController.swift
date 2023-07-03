@@ -179,12 +179,12 @@ extension MainViewController: UITableViewDelegate {
                 self.changeItemPriority(withID: item.id, to: .high)
             }
             
-            let makeRegularAction = UIAction(title: "Make as regular") { _ in
+            let makeRegularAction = UIAction(title: "Mark as regular") { _ in
                 let item = self.items[indexPath.row]
                 self.changeItemPriority(withID: item.id, to: .regular)
             }
             
-            let makeLowAction = UIAction(title: "Make as unimportant", image: Symbols.arrowDownSymbol) { _ in
+            let makeLowAction = UIAction(title: "Mark as unimportant", image: Symbols.arrowDownSymbol) { _ in
                 let item = self.items[indexPath.row]
                 self.changeItemPriority(withID: item.id, to: .low)
             }
