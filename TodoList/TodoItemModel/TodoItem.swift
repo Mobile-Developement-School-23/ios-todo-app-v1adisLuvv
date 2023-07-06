@@ -32,8 +32,8 @@ extension TodoItem: Equatable {}
 
 enum Priority: String {
     case low
-    case regular
-    case high
+    case basic
+    case important
 }
 
 // enum representing the field names for JSON

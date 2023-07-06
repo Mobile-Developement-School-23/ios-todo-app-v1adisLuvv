@@ -18,8 +18,8 @@ extension TodoItem {
               let isDone = jsonDict[FieldName.isDone.rawValue] as? Bool
         else { return nil }
         
-        // regular if not exists
-        let priority = Priority(rawValue: jsonDict[FieldName.priority.rawValue] as? String ?? "") ?? Priority.regular
+        // basic if not exists
+        let priority = Priority(rawValue: jsonDict[FieldName.priority.rawValue] as? String ?? "") ?? Priority.basic
         
         // must exist
         guard let dateCreatedTimestamp = jsonDict[FieldName.dateCreated.rawValue] as? Double else { return nil }
@@ -46,7 +46,7 @@ extension TodoItem {
                                        FieldName.text.rawValue: text,
                                        FieldName.isDone.rawValue: isDone]
         
-        if priority != .regular {
+        if priority != .basic {
             jsonDict[FieldName.priority.rawValue] = priority.rawValue
         }
         

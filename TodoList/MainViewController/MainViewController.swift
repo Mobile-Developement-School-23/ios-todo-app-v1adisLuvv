@@ -59,9 +59,9 @@ final class MainViewController: UIViewController {
     
     private func loadTodoItems() {
         let fileCache = FileCache.shared
-        let item1 = TodoItem(text: "buy cheese", priority: .regular, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
-        let item2 = TodoItem(text: "buy water", priority: .high, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
-        let item3 = TodoItem(text: "buy milk", priority: .high, isDone: false)
+        let item1 = TodoItem(text: "buy cheese", priority: .basic, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
+        let item2 = TodoItem(text: "buy water", priority: .important, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
+        let item3 = TodoItem(text: "buy milk", priority: .important, isDone: false)
         let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
         let item5 = TodoItem(text: "buy apples", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
         fileCache.addTask(item1)
@@ -160,7 +160,7 @@ extension MainViewController: UITableViewDelegate {
                 if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
                     let item = self.items[indexPath.row]
                     self.changeItemCompleteness(itemID: item.id)
-                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .important, hasDeadline: item.deadline != nil)
                     self.headerView.updateCompletedLabel(items: self.items)
                 }
             }
@@ -169,19 +169,19 @@ extension MainViewController: UITableViewDelegate {
                 if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
                     let item = self.items[indexPath.row]
                     self.changeItemCompleteness(itemID: item.id)
-                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                    cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .important, hasDeadline: item.deadline != nil)
                     self.headerView.updateCompletedLabel(items: self.items)
                 }
             }
             
             let makeImportantAction = UIAction(title: "Mark as important", image: Symbols.doubleExclamationMarkSymbol) { _ in
                 let item = self.items[indexPath.row]
-                self.changeItemPriority(withID: item.id, to: .high)
+                self.changeItemPriority(withID: item.id, to: .important)
             }
             
-            let makeRegularAction = UIAction(title: "Mark as regular") { _ in
+            let makeRegularAction = UIAction(title: "Mark as basic") { _ in
                 let item = self.items[indexPath.row]
-                self.changeItemPriority(withID: item.id, to: .regular)
+                self.changeItemPriority(withID: item.id, to: .basic)
             }
             
             let makeLowAction = UIAction(title: "Mark as unimportant", image: Symbols.arrowDownSymbol) { _ in
@@ -205,7 +205,7 @@ extension MainViewController: UITableViewDelegate {
             if self.items[indexPath.row].priority == .low {
                 children.append(makeImportantAction)
                 children.append(makeRegularAction)
-            } else if self.items[indexPath.row].priority == .regular {
+            } else if self.items[indexPath.row].priority == .basic {
                 children.append(makeImportantAction)
                 children.append(makeLowAction)
             } else {
@@ -274,7 +274,7 @@ extension MainViewController: UITableViewDataSource {
                 guard let self = self else { return }
                 let item = self.items[indexPath.row]
                 self.changeItemCompleteness(itemID: item.id)
-                cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+                cell.markTaskAsDone(item.isDone, isHighPriority: item.priority == .important, hasDeadline: item.deadline != nil)
                 self.headerView.updateCompletedLabel(items: self.items)
             }
             completionHandler(true)

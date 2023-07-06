@@ -154,7 +154,7 @@ final class TaskTableViewCell: UITableViewCell {
     // MARK: - Interaction andling
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
-        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
+        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .important, hasDeadline: currentItem.deadline != nil)
         delegate?.changeItemCompleteness(itemID: currentItem.id)
     }
     
@@ -171,7 +171,7 @@ final class TaskTableViewCell: UITableViewCell {
             let dateString = dateFormatter.string(from: deadline)
             deadlineLabel.text = dateString
         }
-        markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+        markTaskAsDone(item.isDone, isHighPriority: item.priority == .important, hasDeadline: item.deadline != nil)
     }
     
     func markTaskAsDone(_ isDone: Bool, isHighPriority: Bool, hasDeadline: Bool) {

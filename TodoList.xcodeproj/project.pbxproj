@@ -33,7 +33,9 @@
 		21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */; };
 		21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */; };
 		21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */; };
+		21DC824A2A5747DC00696317 /* NetworkingSevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC82492A5747DC00696317 /* NetworkingSevice.swift */; };
 		21EA1B1C2A4E5179002B9CB5 /* PassDataBackDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */; };
+		21F6E2F22A55A9DF003655D0 /* DefaultNetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,7 +90,9 @@
 		21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
+		21DC82492A5747DC00696317 /* NetworkingSevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSevice.swift; sourceTree = "<group>"; };
 		21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassDataBackDelegate.swift; sourceTree = "<group>"; };
+		21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNetworkingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,8 @@
 		21028CF92A4F5C8500DA0951 /* MainViewController */ = {
 			isa = PBXGroup;
 			children = (
+				21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */,
+				212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */,
 				2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */,
 				2167AA982A524EF3001627B1 /* TasksTableView.swift */,
 				2167AA9A2A52503C001627B1 /* AddButton.swift */,
@@ -153,8 +159,6 @@
 			isa = PBXGroup;
 			children = (
 				21719C672A3D26850053166D /* TodoList */,
-				212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */,
-				21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */,
 				21719C892A3D2A510053166D /* TodoListTests */,
 				21719C662A3D26850053166D /* Products */,
 			);
@@ -178,6 +182,7 @@
 				2167AA972A5223B0001627B1 /* Persistence */,
 				2128192C2A4B5AF900B9DBF5 /* Resources */,
 				21B8457F2A410CAF007531DB /* SupportingFiles */,
+				21DC82482A5747A900696317 /* Networking */,
 			);
 			path = TodoList;
 			sourceTree = "<group>";
@@ -215,6 +220,15 @@
 				21719C6C2A3D26850053166D /* DetailViewController.swift */,
 			);
 			path = DetailViewController;
+			sourceTree = "<group>";
+		};
+		21DC82482A5747A900696317 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */,
+				21DC82492A5747DC00696317 /* NetworkingSevice.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -338,11 +352,13 @@
 				21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */,
 				21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */,
 				213EA8472A5220CE00B1AEF7 /* TodoItem.swift in Sources */,
+				21F6E2F22A55A9DF003655D0 /* DefaultNetworkingService.swift in Sources */,
 				21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */,
 				213EA84B2A52211F00B1AEF7 /* TodoItem+CSV.swift in Sources */,
 				2167AA9F2A5258C7001627B1 /* FooterView.swift in Sources */,
 				2167AA9D2A525199001627B1 /* HeaderView.swift in Sources */,
 				21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */,
+				21DC824A2A5747DC00696317 /* NetworkingSevice.swift in Sources */,
 				21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */,
 				21575E0F2A451BE0006D1D4F /* Symbols.swift in Sources */,
 				2167AA9B2A52503D001627B1 /* AddButton.swift in Sources */,

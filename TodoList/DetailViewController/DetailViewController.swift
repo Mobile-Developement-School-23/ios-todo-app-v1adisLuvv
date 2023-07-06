@@ -18,7 +18,7 @@ final class DetailViewController: UIViewController {
     
     private var id: String?
     private var text: String?
-    private var priority: Priority = .regular
+    private var priority: Priority = .basic
     private var deadline: Date? {
         didSet {
             tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
@@ -385,9 +385,9 @@ extension DetailViewController: DidChangePriorityDelegate {
         case 0:
             priority = .low
         case 1:
-            priority = .regular
+            priority = .basic
         case 2:
-            priority = .high
+            priority = .important
         default:
             break
         }

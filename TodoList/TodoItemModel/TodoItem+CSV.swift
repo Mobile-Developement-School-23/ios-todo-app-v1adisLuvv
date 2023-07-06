@@ -32,7 +32,7 @@ extension TodoItem {
         
         let isDone = isDoneString.lowercased() == "true"
         
-        var priority = Priority.regular // remains regular if not exists
+        var priority = Priority.basic // remains basic if not exists
         if let priorityString = priorityString,
            !priorityString.isEmpty,
            let priorityValue = Priority(rawValue: priorityString) {
@@ -79,7 +79,7 @@ extension TodoItem {
             csvString.append("\(csvText),")
         }
         
-        if priority != .regular {
+        if priority != .basic {
             csvString.append("\(priority.rawValue),")
         } else {
             csvString.append(",")

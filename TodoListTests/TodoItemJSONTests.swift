@@ -43,7 +43,7 @@ final class ToDoItemJSONTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.high
+        let priority = Priority.important
         let deadlineTimestamp: Double = 1777777777.0
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
@@ -178,7 +178,7 @@ final class ToDoItemJSONTests: XCTestCase {
         let todoItem = TodoItem.parse(json: validJSON)
         
         XCTAssertNotNil(todoItem)
-        XCTAssertEqual(todoItem?.priority, Priority.regular)
+        XCTAssertEqual(todoItem?.priority, Priority.basic)
         XCTAssertNil(todoItem?.deadline)
         XCTAssertNil(todoItem?.dateModified)
     }
@@ -187,7 +187,7 @@ final class ToDoItemJSONTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.high
+        let priority = Priority.important
         let deadlineTimestamp: Double = 1777777777.0
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
@@ -217,7 +217,7 @@ final class ToDoItemJSONTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.regular
+        let priority = Priority.basic
         let deadlineTimestamp: Double = 1777777777.0
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
