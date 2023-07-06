@@ -34,6 +34,8 @@
 		21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */; };
 		21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */; };
 		21DC824A2A5747DC00696317 /* NetworkingSevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC82492A5747DC00696317 /* NetworkingSevice.swift */; };
+		21DC824C2A57499E00696317 /* ServerTodoItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC824B2A57499E00696317 /* ServerTodoItemModel.swift */; };
+		21DC824E2A574B3900696317 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC824D2A574B3900696317 /* NetworkError.swift */; };
 		21EA1B1C2A4E5179002B9CB5 /* PassDataBackDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */; };
 		21F6E2F22A55A9DF003655D0 /* DefaultNetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */; };
 /* End PBXBuildFile section */
@@ -91,6 +93,8 @@
 		21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
 		21DC82492A5747DC00696317 /* NetworkingSevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSevice.swift; sourceTree = "<group>"; };
+		21DC824B2A57499E00696317 /* ServerTodoItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerTodoItemModel.swift; sourceTree = "<group>"; };
+		21DC824D2A574B3900696317 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassDataBackDelegate.swift; sourceTree = "<group>"; };
 		21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNetworkingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,8 +229,10 @@
 		21DC82482A5747A900696317 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */,
 				21DC82492A5747DC00696317 /* NetworkingSevice.swift */,
+				21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */,
+				21DC824B2A57499E00696317 /* ServerTodoItemModel.swift */,
+				21DC824D2A574B3900696317 /* NetworkError.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -353,10 +359,12 @@
 				21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */,
 				213EA8472A5220CE00B1AEF7 /* TodoItem.swift in Sources */,
 				21F6E2F22A55A9DF003655D0 /* DefaultNetworkingService.swift in Sources */,
+				21DC824C2A57499E00696317 /* ServerTodoItemModel.swift in Sources */,
 				21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */,
 				213EA84B2A52211F00B1AEF7 /* TodoItem+CSV.swift in Sources */,
 				2167AA9F2A5258C7001627B1 /* FooterView.swift in Sources */,
 				2167AA9D2A525199001627B1 /* HeaderView.swift in Sources */,
+				21DC824E2A574B3900696317 /* NetworkError.swift in Sources */,
 				21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */,
 				21DC824A2A5747DC00696317 /* NetworkingSevice.swift in Sources */,
 				21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */,
