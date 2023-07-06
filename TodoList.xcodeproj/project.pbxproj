@@ -36,6 +36,7 @@
 		21DC824A2A5747DC00696317 /* NetworkingSevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC82492A5747DC00696317 /* NetworkingSevice.swift */; };
 		21DC824C2A57499E00696317 /* ServerTodoItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC824B2A57499E00696317 /* ServerTodoItemModel.swift */; };
 		21DC824E2A574B3900696317 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC824D2A574B3900696317 /* NetworkError.swift */; };
+		21DC82502A5758EC00696317 /* TodoItemConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DC824F2A5758EC00696317 /* TodoItemConverter.swift */; };
 		21EA1B1C2A4E5179002B9CB5 /* PassDataBackDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */; };
 		21F6E2F22A55A9DF003655D0 /* DefaultNetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */; };
 /* End PBXBuildFile section */
@@ -95,6 +96,7 @@
 		21DC82492A5747DC00696317 /* NetworkingSevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSevice.swift; sourceTree = "<group>"; };
 		21DC824B2A57499E00696317 /* ServerTodoItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerTodoItemModel.swift; sourceTree = "<group>"; };
 		21DC824D2A574B3900696317 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		21DC824F2A5758EC00696317 /* TodoItemConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemConverter.swift; sourceTree = "<group>"; };
 		21EA1B1B2A4E5179002B9CB5 /* PassDataBackDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassDataBackDelegate.swift; sourceTree = "<group>"; };
 		21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNetworkingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -233,6 +235,7 @@
 				21F6E2F12A55A9DF003655D0 /* DefaultNetworkingService.swift */,
 				21DC824B2A57499E00696317 /* ServerTodoItemModel.swift */,
 				21DC824D2A574B3900696317 /* NetworkError.swift */,
+				21DC824F2A5758EC00696317 /* TodoItemConverter.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -358,6 +361,7 @@
 				21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */,
 				21719C6B2A3D26850053166D /* SceneDelegate.swift in Sources */,
 				213EA8472A5220CE00B1AEF7 /* TodoItem.swift in Sources */,
+				21DC82502A5758EC00696317 /* TodoItemConverter.swift in Sources */,
 				21F6E2F22A55A9DF003655D0 /* DefaultNetworkingService.swift in Sources */,
 				21DC824C2A57499E00696317 /* ServerTodoItemModel.swift in Sources */,
 				21575E0D2A4504F2006D1D4F /* ColorScheme.swift in Sources */,
