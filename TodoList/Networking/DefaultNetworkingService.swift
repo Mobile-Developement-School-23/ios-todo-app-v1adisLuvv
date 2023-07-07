@@ -15,31 +15,30 @@ final class DefaultNetworkingService: NetworkingService {
     private static var revision = 0
     
     private static let minDelay: TimeInterval = 2.0
-    private static let maxDelay: TimeInterval = 120.0
+    private static let maxDelay: TimeInterval = 120
     private static let factor: Double = 1.5
     private static let jitter: Double = 0.05
     
     private static func exponentialBackoffRetry<T>(operation: @escaping () async throws -> T) async throws -> T {
         var delay = minDelay
         var result: T? = nil
-        var resultError: Error? = nil
         
         while delay < maxDelay {
             do {
                 result = try await operation()
                 break
             } catch {
-                resultError = error
+                // instead of DispatchQueue.async I used Task.sleep(delay)
                 try await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC))) // does not block the underlying thread
                 let jitter = delay * jitter
                 delay = powl(delay, factor) + jitter
+                print(delay)
             }
         }
-        
+
         if let result = result {
+            print(result)
             return result
-        } else if let resultError = resultError {
-            throw resultError
         } else {
             throw NetworkError.retryFailed
         }

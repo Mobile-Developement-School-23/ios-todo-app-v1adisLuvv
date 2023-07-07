@@ -16,6 +16,14 @@ final class MainViewController: UIViewController {
     private var isDirty = false
     
     // MARK: - UI Elements
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.color = ColorScheme.primaryLabel
+        return indicator
+    }()
+    
+    
     private lazy var tableView: TasksTableView = {
         let tableView = TasksTableView()
         tableView.delegate = self
@@ -52,6 +60,9 @@ final class MainViewController: UIViewController {
         
         view.addSubview(tableView)
         view.addSubview(addButton)
+        view.addSubview(activityIndicator)
+        
+        activityIndicator.startAnimating()
         
         loadTodoItems()
         setupConstraints()
@@ -66,12 +77,23 @@ final class MainViewController: UIViewController {
                 items = loadedItems
                 tableView.reloadData()
                 headerView.updateCompletedLabel(items: items)
+                activityIndicator.stopAnimating()
+            } catch {
+                activityIndicator.stopAnimating()
+                let alert = UIAlertController(title: "Unable to fetch data", message: "Bad internet connection", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                present(alert, animated: true)
             }
         }
     }
     
     // MARK: - setupConstraints
     private func setupConstraints() {
+        
+        activityIndicator.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.centerX.equalToSuperview()
+        }
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -323,12 +345,15 @@ extension MainViewController: PassDataBackDelegate {
             headerView.updateCompletedLabel(items: items)
             Task {
                 do {
+                    activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                     let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
                     isDirty = false
+                    activityIndicator.stopAnimating()
                 } catch NetworkError.retryFailed {
                     loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                    activityIndicator.stopAnimating()
                 } catch {
                     print(error)
                 }
@@ -343,11 +368,14 @@ extension MainViewController: PassDataBackDelegate {
         headerView.updateCompletedLabel(items: items)
         Task {
             do {
+                activityIndicator.startAnimating()
                 let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                 _ = try await DefaultNetworkingService.uploadItem(item: elementToSend)
                 isDirty = false
+                activityIndicator.stopAnimating()
             } catch NetworkError.retryFailed {
                 loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                activityIndicator.stopAnimating()
             } catch {
                 print(error)
             }
@@ -363,12 +391,15 @@ extension MainViewController: PassDataBackDelegate {
             headerView.updateCompletedLabel(items: items)
             Task {
                 do {
+                    activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                     let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
                     isDirty = false
+                    activityIndicator.stopAnimating()
                 } catch NetworkError.retryFailed {
                     loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                    activityIndicator.stopAnimating()
                 } catch {
                     print(error)
                 }
@@ -384,10 +415,13 @@ extension MainViewController: PassDataBackDelegate {
         headerView.updateCompletedLabel(items: items)
         Task {
             do {
+                activityIndicator.startAnimating()
                 try await DefaultNetworkingService.deleteItem(itemID: itemID)
                 isDirty = false
+                activityIndicator.stopAnimating()
             } catch NetworkError.retryFailed {
                 loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                activityIndicator.stopAnimating()
             } catch {
                 print(error)
             }
@@ -413,12 +447,15 @@ extension MainViewController {
             headerView.updateCompletedLabel(items: items)
             Task {
                 do {
+                    activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                     let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
                     isDirty = false
+                    activityIndicator.stopAnimating()
                 } catch NetworkError.retryFailed {
                     loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                    activityIndicator.stopAnimating()
                 } catch {
                     print(error)
                 }
