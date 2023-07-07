@@ -13,6 +13,8 @@ final class MainViewController: UIViewController {
     // MARK: - Variables
     private var items: [TodoItem] = []
     
+    private var isDirty = false
+    
     // MARK: - UI Elements
     private lazy var tableView: TasksTableView = {
         let tableView = TasksTableView()
@@ -54,23 +56,18 @@ final class MainViewController: UIViewController {
         loadTodoItems()
         setupConstraints()
         setupNavigationBar()
-        headerView.updateCompletedLabel(items: items)
     }
     
     private func loadTodoItems() {
-        let fileCache = FileCache.shared
-        let item1 = TodoItem(text: "buy cheese", priority: .basic, deadline: Date(timeIntervalSinceNow: 200000), isDone: false)
-        let item2 = TodoItem(text: "buy water", priority: .important, deadline: Date(timeIntervalSinceNow: 300000), isDone: false)
-        let item3 = TodoItem(text: "buy milk", priority: .important, isDone: false)
-        let item4 = TodoItem(text: "buy bread", priority: .low, isDone: true)
-        let item5 = TodoItem(text: "buy apples", priority: .low, deadline: Date(timeIntervalSinceNow: 400000), isDone: true)
-        fileCache.addTask(item1)
-        fileCache.addTask(item2)
-        fileCache.addTask(item3)
-        fileCache.addTask(item4)
-        fileCache.addTask(item5)
-        
-        items = fileCache.todoItems
+        Task {
+            do {
+                let elements = try await DefaultNetworkingService.loadList()
+                let loadedItems = TodoItemConverter.convertServerListToTodoItemsList(elements)
+                items = loadedItems
+                tableView.reloadData()
+                headerView.updateCompletedLabel(items: items)
+            }
+        }
     }
     
     // MARK: - setupConstraints
@@ -320,37 +317,87 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: PassDataBackDelegate {
     func updateExistingItem(withID itemID: String, changeTo item: TodoItem) {
         if let index = items.firstIndex(where: { $0.id == itemID }) {
+            isDirty = true
             items[index] = item
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
+            Task {
+                do {
+                    let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
+                    let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
+                    items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
+                    isDirty = false
+                } catch NetworkError.retryFailed {
+                    loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                } catch {
+                    print(error)
+                }
+            }
         }
     }
     
     func createNewItem(_ item: TodoItem) {
+        isDirty = true
         items.append(item)
         tableView.reloadData()
         headerView.updateCompletedLabel(items: items)
+        Task {
+            do {
+                let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
+                _ = try await DefaultNetworkingService.uploadItem(item: elementToSend)
+                isDirty = false
+            } catch NetworkError.retryFailed {
+                loadTodoItems() // if multiple retries failed we update the list with actual list from server
+            } catch {
+                print(error)
+            }
+        }
     }
     
     func changeItemCompleteness(itemID: String) {
         if let index = items.firstIndex(where: { $0.id == itemID }) {
+            isDirty = true
             items[index].isDone.toggle()
+            let item = items[index]
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
+            Task {
+                do {
+                    let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
+                    let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
+                    items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
+                    isDirty = false
+                } catch NetworkError.retryFailed {
+                    loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                } catch {
+                    print(error)
+                }
+            }
         }
     }
     
     func removeExistingItem(itemID: String) {
         guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
+        isDirty = true
         items.remove(at: index)
         tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
+        headerView.updateCompletedLabel(items: items)
+        Task {
+            do {
+                try await DefaultNetworkingService.deleteItem(itemID: itemID)
+                isDirty = false
+            } catch NetworkError.retryFailed {
+                loadTodoItems() // if multiple retries failed we update the list with actual list from server
+            } catch {
+                print(error)
+            }
+        }
         if index == 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
                 guard let self = self else { return }
                 self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
             }
         }
-        headerView.updateCompletedLabel(items: items)
     }
 }
 
@@ -359,9 +406,23 @@ extension MainViewController {
     
     private func changeItemPriority(withID itemID: String, to priority: Priority) {
         if let index = items.firstIndex(where: { $0.id == itemID }) {
+            isDirty = true
             items[index].priority = priority
+            let item = items[index]
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
+            Task {
+                do {
+                    let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
+                    let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
+                    items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
+                    isDirty = false
+                } catch NetworkError.retryFailed {
+                    loadTodoItems() // if multiple retries failed we update the list with actual list from server
+                } catch {
+                    print(error)
+                }
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ final class TodoItemConverter {
         let isDone = item.isDone
         let color = "#FFFFFF"
         let dateCreated = Int(item.dateCreated.timeIntervalSince1970)
-        var dateModified: Int?
+        var dateModified = 0
         if let dateModifiedDouble = item.dateModified?.timeIntervalSince1970 {
             dateModified = Int(dateModifiedDouble)
         }
@@ -45,6 +45,24 @@ final class TodoItemConverter {
         }
         let item = TodoItem(id: id, text: text, priority: priority, deadline: deadline, isDone: isDone, dateCreated: dateCreated, dateModified: dateModified)
         return item
+    }
+    
+    static func convertServerListToTodoItemsList(_ serverList: [ServerElement]) -> [TodoItem] {
+        var items: [TodoItem] = []
+        serverList.forEach { element in
+            let item = convertServerElementToTodoItem(element)
+            items.append(item)
+        }
+        return items
+    }
+    
+    static func convertTodoItemsListToServerList(_ todoItemsList: [TodoItem]) -> [ServerElement] {
+        var elements: [ServerElement] = []
+        todoItemsList.forEach { item in
+            let element = convertTodoItemToServerElement(item)
+            elements.append(element)
+        }
+        return elements
     }
     
 }

@@ -12,6 +12,45 @@ final class DefaultNetworkingService: NetworkingService {
     private static let baseUrlSource = "https://beta.mrdekk.ru/todobackend/list"
     private static let token = "oligopolistic"
     
+    private static var revision = 0
+    
+    private static let minDelay: TimeInterval = 2.0
+    private static let maxDelay: TimeInterval = 120.0
+    private static let factor: Double = 1.5
+    private static let jitter: Double = 0.05
+    
+    private static func exponentialBackoffRetry<T>(operation: @escaping () async throws -> T) async throws -> T {
+        var delay = minDelay
+        var result: T? = nil
+        var resultError: Error? = nil
+        
+        while delay < maxDelay {
+            do {
+                result = try await operation()
+                break
+            } catch {
+                resultError = error
+                try await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC))) // does not block the underlying thread
+                let jitter = delay * jitter
+                delay = powl(delay, factor) + jitter
+            }
+        }
+        
+        if let result = result {
+            return result
+        } else if let resultError = resultError {
+            throw resultError
+        } else {
+            throw NetworkError.retryFailed
+        }
+    }
+    
+    private static func makeRequestWithRetry(URL url: URL, httpMethod: HttpMethod, httpBody: Data? = nil) async throws -> (Data, HTTPURLResponse) {
+        return try await exponentialBackoffRetry {
+            try await makeRequest(URL: url, httpMethod: httpMethod, httpBody: httpBody)
+        }
+    }
+    
     private static func makeRequest(URL url: URL, httpMethod: HttpMethod, httpBody: Data? = nil) async throws -> (Data, HTTPURLResponse) {
         var request = URLRequest(url: url)
         
@@ -19,7 +58,7 @@ final class DefaultNetworkingService: NetworkingService {
         request.httpBody = httpBody
         
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("30", forHTTPHeaderField: "X-Last-Known-Revision")
+        request.setValue("\(revision)", forHTTPHeaderField: "X-Last-Known-Revision")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -39,8 +78,9 @@ final class DefaultNetworkingService: NetworkingService {
         guard let url = URL(string: baseUrlSource) else {
             throw NetworkError.wrongUrl
         }
-        let (data, _) = try await makeRequest(URL: url, httpMethod: .get)
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .get)
         let response = try JSONDecoder().decode(ServerResponseList.self, from: data)
+        revision = response.revision
         print(response)
         return response.list
     }
@@ -51,9 +91,10 @@ final class DefaultNetworkingService: NetworkingService {
         }
         let request = ServerRequestList(status: "ok", list: list)
         let httpBody = try JSONEncoder().encode(request)
-        let (data, _) = try await makeRequest(URL: url, httpMethod: .patch, httpBody: httpBody)
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .patch, httpBody: httpBody)
         let response = try JSONDecoder().decode(ServerResponseList.self, from: data)
         print(response)
+        revision += 1
         return response.list
     }
     
@@ -62,7 +103,7 @@ final class DefaultNetworkingService: NetworkingService {
         guard let url = URL(string: urlSource) else {
             throw NetworkError.wrongUrl
         }
-        let (data, _) = try await makeRequest(URL: url, httpMethod: .get)
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .get)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
         print(response)
         return response.element
@@ -74,9 +115,10 @@ final class DefaultNetworkingService: NetworkingService {
         }
         let request = ServerRequestElement(status: "ok", element: item)
         let httpBody = try JSONEncoder().encode(request)
-        let (data, _) = try await makeRequest(URL: url, httpMethod: .post, httpBody: httpBody)
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .post, httpBody: httpBody)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
         print(response)
+        revision += 1
         return response.element
     }
     
@@ -87,20 +129,23 @@ final class DefaultNetworkingService: NetworkingService {
         }
         let request = ServerRequestElement(status: "ok", element: item)
         let httpBody = try JSONEncoder().encode(request)
-        let (data, _) = try await makeRequest(URL: url, httpMethod: .put, httpBody: httpBody)
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .put, httpBody: httpBody)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
         print(response)
+        revision += 1
         return response.element
     }
     
+    @discardableResult
     static func deleteItem(itemID id: String) async throws -> ServerElement {
         let urlSource = baseUrlSource + "/\(id)"
         guard let url = URL(string: urlSource) else {
             throw NetworkError.wrongUrl
         }
-        let (data, _) = try await makeRequest(URL: url, httpMethod: .delete)
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .delete)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
         print(response)
+        revision += 1
         return response.element
     }
 }
