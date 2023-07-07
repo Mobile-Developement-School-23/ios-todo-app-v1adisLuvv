@@ -13,11 +13,51 @@ struct Symbols {
     
     // this symbols 100% exists because this is the systemName so we can use force unwrap
     private static let arrowDownSymbolConfig = UIImage.SymbolConfiguration(weight: .bold)
-    
+
     static let arrowDownSymbol = UIImage(systemName: "arrow.down", withConfiguration: arrowDownSymbolConfig)!.withTintColor(ColorScheme.gray, renderingMode: .alwaysOriginal)
     
     private static let doubleExclamationMarkSymbolConfig = UIImage.SymbolConfiguration(weight: .bold)
     
     static let doubleExclamationMarkSymbol = UIImage(systemName: "exclamationmark.2", withConfiguration: doubleExclamationMarkSymbolConfig)!.withTintColor(ColorScheme.red, renderingMode: .alwaysOriginal)
     
+    
+    
+    
+    private static let regularTaskButtonSymbolConfig = UIImage.SymbolConfiguration(weight: .regular)
+    
+    static let regularTaskButtonSymbol = UIImage(systemName: "circle", withConfiguration: regularTaskButtonSymbolConfig)!.withTintColor(ColorScheme.lightGray, renderingMode: .alwaysOriginal)
+    
+    private static let highPriorityTaskButtonSymbolConfig = UIImage.SymbolConfiguration(weight: .regular)
+    
+    static let highPriorityTaskButtonSymbol = UIImage(systemName: "circle", withConfiguration: highPriorityTaskButtonSymbolConfig)!.withTintColor(ColorScheme.red, renderingMode: .alwaysOriginal)
+    
+    private static let checkedTaskButtonSymbolConfig = UIImage.SymbolConfiguration(weight: .bold)
+    
+    static let checkedTaskButtonSymbol = UIImage(systemName: "checkmark.circle.fill", withConfiguration: checkedTaskButtonSymbolConfig)!.withTintColor(ColorScheme.green, renderingMode: .alwaysOriginal)
+    
+    
+    
+    private static let tableViewDisclosureSymbolConfig = UIImage.SymbolConfiguration(weight: .medium)
+    
+    static let tableViewDisclosureSymbol = UIImage(systemName: "chevron.forward", withConfiguration: tableViewDisclosureSymbolConfig)!.withTintColor(ColorScheme.gray, renderingMode: .alwaysOriginal)
+    
+    
+    
+    private static let checkedTaskLeadingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
+    
+    static let checkedTaskLeadingSwipeSymbol = UIImage(systemName: "checkmark.circle.fill", withConfiguration: checkedTaskLeadingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
+    
+    private static let infoTrailingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
+    
+    static let infoTrailingSwipeSymbol = UIImage(systemName: "info.circle.fill", withConfiguration: infoTrailingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
+    
+    private static let deleteTrailingSwipeSymbolConfig = UIImage.SymbolConfiguration(weight: .heavy)
+    
+    static let deleteTrailingSwipeSymbol = UIImage(systemName: "trash.fill", withConfiguration: deleteTrailingSwipeSymbolConfig)!.withTintColor(ColorScheme.white, renderingMode: .alwaysOriginal)
+    
+    
+    
+    private static let calendarDeadlineSymbolConfig = UIImage.SymbolConfiguration(weight: .medium)
+    
+    static let calendarDeadlineSymbol = UIImage(systemName: "calendar", withConfiguration: calendarDeadlineSymbolConfig)!.withTintColor(ColorScheme.tertiaryLabel, renderingMode: .alwaysOriginal)
 }

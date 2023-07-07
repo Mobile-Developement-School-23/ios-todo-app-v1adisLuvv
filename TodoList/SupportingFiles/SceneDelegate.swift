@@ -15,8 +15,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = DetailViewController()
+        let navigationController = UINavigationController(rootViewController: MainViewController())
+        navigationController.modalPresentationStyle = .popover
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 }
-
