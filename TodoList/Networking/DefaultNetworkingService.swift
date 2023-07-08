@@ -12,7 +12,18 @@ final class DefaultNetworkingService: NetworkingService {
     private static let baseUrlSource = "https://beta.mrdekk.ru/todobackend/list"
     private static let token = "oligopolistic"
     
-    private static var revision = 0
+    private static let mutex = NSLock()
+    private static var _revision = 0
+    private static var revision: Int {
+        get {
+            _revision
+        }
+        set {
+            mutex.withLock {
+                _revision = newValue
+            }
+        }
+    }
     
     private static let minDelay: TimeInterval = 2.0
     private static let maxDelay: TimeInterval = 120

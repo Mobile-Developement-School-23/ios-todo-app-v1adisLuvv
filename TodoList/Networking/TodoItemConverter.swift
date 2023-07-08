@@ -24,7 +24,7 @@ final class TodoItemConverter {
         if let dateModifiedDouble = item.dateModified?.timeIntervalSince1970 {
             dateModified = Int(dateModifiedDouble)
         }
-        let lastUpdatedBy = UIDevice.current.identifierForVendor?.uuidString ?? "iPhone"
+        let lastUpdatedBy = "iPhone"
         let element = ServerElement(id: id, text: text, priority: priority, deadline: deadline, isDone: isDone, color: color, dateCreated: dateCreated, dateModified: dateModified, lastUpdatedBy: lastUpdatedBy)
         return element
     }
