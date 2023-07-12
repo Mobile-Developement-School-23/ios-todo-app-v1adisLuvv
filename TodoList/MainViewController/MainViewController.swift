@@ -347,12 +347,8 @@ extension MainViewController: PassDataBackDelegate {
                 do {
                     activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
-                    let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
-                    items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
+                    try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     isDirty = false
-                    activityIndicator.stopAnimating()
-                } catch NetworkError.retryFailed {
-                    loadTodoItems() // if multiple retries failed we update the list with actual list from server
                     activityIndicator.stopAnimating()
                 } catch {
                     print(error)
@@ -370,11 +366,8 @@ extension MainViewController: PassDataBackDelegate {
             do {
                 activityIndicator.startAnimating()
                 let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
-                _ = try await DefaultNetworkingService.uploadItem(item: elementToSend)
+                try await DefaultNetworkingService.uploadItem(item: elementToSend)
                 isDirty = false
-                activityIndicator.stopAnimating()
-            } catch NetworkError.retryFailed {
-                loadTodoItems() // if multiple retries failed we update the list with actual list from server
                 activityIndicator.stopAnimating()
             } catch {
                 print(error)
@@ -393,12 +386,8 @@ extension MainViewController: PassDataBackDelegate {
                 do {
                     activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
-                    let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
-                    items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
+                    try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     isDirty = false
-                    activityIndicator.stopAnimating()
-                } catch NetworkError.retryFailed {
-                    loadTodoItems() // if multiple retries failed we update the list with actual list from server
                     activityIndicator.stopAnimating()
                 } catch {
                     print(error)
@@ -418,9 +407,6 @@ extension MainViewController: PassDataBackDelegate {
                 activityIndicator.startAnimating()
                 try await DefaultNetworkingService.deleteItem(itemID: itemID)
                 isDirty = false
-                activityIndicator.stopAnimating()
-            } catch NetworkError.retryFailed {
-                loadTodoItems() // if multiple retries failed we update the list with actual list from server
                 activityIndicator.stopAnimating()
             } catch {
                 print(error)
@@ -449,12 +435,8 @@ extension MainViewController {
                 do {
                     activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
-                    let receivedElement = try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
-                    items[index] = TodoItemConverter.convertServerElementToTodoItem(receivedElement)
+                    try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     isDirty = false
-                    activityIndicator.stopAnimating()
-                } catch NetworkError.retryFailed {
-                    loadTodoItems() // if multiple retries failed we update the list with actual list from server
                     activityIndicator.stopAnimating()
                 } catch {
                     print(error)

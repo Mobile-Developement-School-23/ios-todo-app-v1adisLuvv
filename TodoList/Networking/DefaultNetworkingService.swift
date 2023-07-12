@@ -119,6 +119,7 @@ final class DefaultNetworkingService: NetworkingService {
         return response.element
     }
     
+    @discardableResult
     static func uploadItem(item: ServerElement) async throws -> ServerElement {
         guard let url = URL(string: baseUrlSource) else {
             throw NetworkError.wrongUrl
@@ -132,6 +133,7 @@ final class DefaultNetworkingService: NetworkingService {
         return response.element
     }
     
+    @discardableResult
     static func updateItem(itemID id: String, withItem item: ServerElement) async throws -> ServerElement {
         let urlSource = baseUrlSource + "/\(id)"
         guard let url = URL(string: urlSource) else {
