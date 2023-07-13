@@ -62,29 +62,17 @@ final class MainViewController: UIViewController {
         view.addSubview(addButton)
         view.addSubview(activityIndicator)
         
-        activityIndicator.startAnimating()
-        
+        Task {
+            try await DefaultNetworkingService.updateCurrentRevision()
+        }
         loadTodoItems()
         setupConstraints()
         setupNavigationBar()
+        headerView.updateCompletedLabel(items: items)
     }
     
     private func loadTodoItems() {
-        Task {
-            do {
-                let elements = try await DefaultNetworkingService.loadList()
-                let loadedItems = TodoItemConverter.convertServerListToTodoItemsList(elements)
-                items = loadedItems
-                tableView.reloadData()
-                headerView.updateCompletedLabel(items: items)
-                activityIndicator.stopAnimating()
-            } catch {
-                activityIndicator.stopAnimating()
-                let alert = UIAlertController(title: "Unable to fetch data", message: "Bad internet connection", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                present(alert, animated: true)
-            }
-        }
+        items = FileCacheCoreData.shared.load()
     }
     
     // MARK: - setupConstraints
@@ -343,13 +331,16 @@ extension MainViewController: PassDataBackDelegate {
             items[index] = item
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
+            do {
+                try FileCacheCoreData.shared.update(itemID: itemID, to: item)
+            } catch {
+                print("Unable to fetch item!")
+            }
             Task {
                 do {
-                    activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                     try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     isDirty = false
-                    activityIndicator.stopAnimating()
                 } catch {
                     print(error)
                 }
@@ -362,13 +353,12 @@ extension MainViewController: PassDataBackDelegate {
         items.append(item)
         tableView.reloadData()
         headerView.updateCompletedLabel(items: items)
+        FileCacheCoreData.shared.insert(item)
         Task {
             do {
-                activityIndicator.startAnimating()
                 let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                 try await DefaultNetworkingService.uploadItem(item: elementToSend)
                 isDirty = false
-                activityIndicator.stopAnimating()
             } catch {
                 print(error)
             }
@@ -382,13 +372,16 @@ extension MainViewController: PassDataBackDelegate {
             let item = items[index]
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
+            do {
+                try FileCacheCoreData.shared.update(itemID: itemID, to: item)
+            } catch {
+                print("Unable to fetch item!")
+            }
             Task {
                 do {
-                    activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                     try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     isDirty = false
-                    activityIndicator.stopAnimating()
                 } catch {
                     print(error)
                 }
@@ -402,12 +395,15 @@ extension MainViewController: PassDataBackDelegate {
         items.remove(at: index)
         tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
         headerView.updateCompletedLabel(items: items)
+        do {
+            try FileCacheCoreData.shared.delete(itemID)
+        } catch {
+            print("Unable to fetch item!")
+        }
         Task {
             do {
-                activityIndicator.startAnimating()
                 try await DefaultNetworkingService.deleteItem(itemID: itemID)
                 isDirty = false
-                activityIndicator.stopAnimating()
             } catch {
                 print(error)
             }
@@ -431,13 +427,16 @@ extension MainViewController {
             let item = items[index]
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
+            do {
+                try FileCacheCoreData.shared.update(itemID: itemID, to: item)
+            } catch {
+                print("Unable to fetch item!")
+            }
             Task {
                 do {
-                    activityIndicator.startAnimating()
                     let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
                     try await DefaultNetworkingService.updateItem(itemID: itemID, withItem: elementToSend)
                     isDirty = false
-                    activityIndicator.stopAnimating()
                 } catch {
                     print(error)
                 }

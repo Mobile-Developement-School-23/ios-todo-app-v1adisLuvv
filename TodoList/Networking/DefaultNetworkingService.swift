@@ -43,12 +43,10 @@ final class DefaultNetworkingService: NetworkingService {
                 try await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC))) // does not block the underlying thread
                 let jitter = delay * jitter
                 delay = powl(delay, factor) + jitter
-                print(delay)
             }
         }
 
         if let result = result {
-            print(result)
             return result
         } else {
             throw NetworkError.retryFailed
@@ -73,11 +71,9 @@ final class DefaultNetworkingService: NetworkingService {
         let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let response = response as? HTTPURLResponse else {
-            print(response)
             throw NetworkError.unexpectedResponse
         }
         guard (200..<300).contains(response.statusCode) else {
-            print(response)
             throw NetworkError.badResponse
         }
         
@@ -91,7 +87,6 @@ final class DefaultNetworkingService: NetworkingService {
         let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .get)
         let response = try JSONDecoder().decode(ServerResponseList.self, from: data)
         revision = response.revision
-        print(response)
         return response.list
     }
     
@@ -103,7 +98,6 @@ final class DefaultNetworkingService: NetworkingService {
         let httpBody = try JSONEncoder().encode(request)
         let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .patch, httpBody: httpBody)
         let response = try JSONDecoder().decode(ServerResponseList.self, from: data)
-        print(response)
         revision += 1
         return response.list
     }
@@ -115,7 +109,6 @@ final class DefaultNetworkingService: NetworkingService {
         }
         let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .get)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
-        print(response)
         return response.element
     }
     
@@ -128,7 +121,6 @@ final class DefaultNetworkingService: NetworkingService {
         let httpBody = try JSONEncoder().encode(request)
         let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .post, httpBody: httpBody)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
-        print(response)
         revision += 1
         return response.element
     }
@@ -143,7 +135,6 @@ final class DefaultNetworkingService: NetworkingService {
         let httpBody = try JSONEncoder().encode(request)
         let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .put, httpBody: httpBody)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
-        print(response)
         revision += 1
         return response.element
     }
@@ -156,8 +147,16 @@ final class DefaultNetworkingService: NetworkingService {
         }
         let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .delete)
         let response = try JSONDecoder().decode(ServerResponseElement.self, from: data)
-        print(response)
         revision += 1
         return response.element
+    }
+    
+    static func updateCurrentRevision() async throws {
+        guard let url = URL(string: baseUrlSource) else {
+            throw NetworkError.wrongUrl
+        }
+        let (data, _) = try await makeRequestWithRetry(URL: url, httpMethod: .get)
+        let response = try JSONDecoder().decode(ServerResponseList.self, from: data)
+        revision = response.revision
     }
 }
