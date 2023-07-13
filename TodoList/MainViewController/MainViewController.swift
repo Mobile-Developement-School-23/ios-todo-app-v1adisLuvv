@@ -12,8 +12,9 @@ final class MainViewController: UIViewController {
     
     // MARK: - Variables
     private var items: [TodoItem] = []
-    
     private var isDirty = false
+    
+    private var fileCache: FileCacheProtocol! // assigned in viewDidLoad
     
     // MARK: - UI Elements
     private lazy var activityIndicator: UIActivityIndicatorView = {
@@ -62,17 +63,22 @@ final class MainViewController: UIViewController {
         view.addSubview(addButton)
         view.addSubview(activityIndicator)
         
+        // can be replaced with FileCacheSQLite.shared
+        fileCache = FileCacheCoreData.shared
+        
         Task {
             try await DefaultNetworkingService.updateCurrentRevision()
         }
-        loadTodoItems()
+        
+        do {
+            items = try fileCache.load()
+        } catch {
+            print(error)
+        }
+        
         setupConstraints()
         setupNavigationBar()
         headerView.updateCompletedLabel(items: items)
-    }
-    
-    private func loadTodoItems() {
-        items = FileCacheCoreData.shared.load()
     }
     
     // MARK: - setupConstraints
@@ -332,9 +338,9 @@ extension MainViewController: PassDataBackDelegate {
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
             do {
-                try FileCacheCoreData.shared.update(itemID: itemID, to: item)
+                try fileCache.update(itemID: itemID, to: item)
             } catch {
-                print("Unable to fetch item!")
+                print(error)
             }
             Task {
                 do {
@@ -353,7 +359,11 @@ extension MainViewController: PassDataBackDelegate {
         items.append(item)
         tableView.reloadData()
         headerView.updateCompletedLabel(items: items)
-        FileCacheCoreData.shared.insert(item)
+        do {
+            try fileCache.insert(item)
+        } catch {
+            print(error)
+        }
         Task {
             do {
                 let elementToSend = TodoItemConverter.convertTodoItemToServerElement(item)
@@ -373,9 +383,9 @@ extension MainViewController: PassDataBackDelegate {
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
             do {
-                try FileCacheCoreData.shared.update(itemID: itemID, to: item)
+                try fileCache.update(itemID: itemID, to: item)
             } catch {
-                print("Unable to fetch item!")
+                print(error)
             }
             Task {
                 do {
@@ -396,9 +406,9 @@ extension MainViewController: PassDataBackDelegate {
         tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .left)
         headerView.updateCompletedLabel(items: items)
         do {
-            try FileCacheCoreData.shared.delete(itemID)
+            try fileCache.delete(itemID)
         } catch {
-            print("Unable to fetch item!")
+            print(error)
         }
         Task {
             do {
@@ -428,9 +438,9 @@ extension MainViewController {
             tableView.reloadData()
             headerView.updateCompletedLabel(items: items)
             do {
-                try FileCacheCoreData.shared.update(itemID: itemID, to: item)
+                try fileCache.update(itemID: itemID, to: item)
             } catch {
-                print("Unable to fetch item!")
+                print(error)
             }
             Task {
                 do {

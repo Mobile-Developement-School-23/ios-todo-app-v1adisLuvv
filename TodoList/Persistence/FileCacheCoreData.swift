@@ -1,5 +1,5 @@
 //
-//  FileCache.swift
+//  FileCacheCoreData.swift
 //  TodoList
 //
 //  Created by Vlad Boguzh on 2023-07-03.
@@ -7,13 +7,13 @@
 
 import CoreData
 
-final class FileCacheCoreData {
+final class FileCacheCoreData: FileCacheProtocol {
     
     static let shared = FileCacheCoreData()
     private init() {}
     
     // MARK: - Core Data stack
-    lazy var persistentContainer: NSPersistentContainer = {
+    private lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "TodoItemCoreDataModel")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -23,16 +23,16 @@ final class FileCacheCoreData {
         return container
     }()
     
-    var mainContext: NSManagedObjectContext {
+    private var mainContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
     
-    func backgroundContext() -> NSManagedObjectContext {
+    private func backgroundContext() -> NSManagedObjectContext {
         return persistentContainer.newBackgroundContext()
     }
 
     // MARK: - Core Data Saving support
-    func saveContext () {
+    private func saveContext () {
         let context = mainContext
         if context.hasChanges {
             do {
@@ -44,26 +44,21 @@ final class FileCacheCoreData {
         }
     }
     
-    func load() -> [TodoItem] {
+    func load() throws -> [TodoItem] {
         let fetchRequest: NSFetchRequest<TodoItemCoreData> = TodoItemCoreData.fetchRequest()
         
-        do {
-            let fetchedItems = try mainContext.fetch(fetchRequest)
-            var items: [TodoItem] = []
-            
-            for fetchedItem in fetchedItems {
-                let item = TodoItem(id: fetchedItem.id, text: fetchedItem.text, priority: Priority(rawValue: fetchedItem.priority)!, deadline: fetchedItem.deadline, isDone: fetchedItem.isDone, dateCreated: fetchedItem.dateCreated, dateModified: fetchedItem.dateModified)
-                items.append(item)
-            }
-            
-            return items
-        } catch {
-            print(error)
+        let fetchedItems = try mainContext.fetch(fetchRequest)
+        var items: [TodoItem] = []
+        
+        for fetchedItem in fetchedItems {
+            let item = TodoItem(id: fetchedItem.id, text: fetchedItem.text, priority: Priority(rawValue: fetchedItem.priority) ?? .basic, deadline: fetchedItem.deadline, isDone: fetchedItem.isDone, dateCreated: fetchedItem.dateCreated, dateModified: fetchedItem.dateModified)
+            items.append(item)
         }
-        return []
+        
+        return items
     }
     
-    func insert(_ item: TodoItem) {
+    func insert(_ item: TodoItem) throws {
         let context = mainContext
         let entity = TodoItemCoreData.entity()
         let newObject = TodoItemCoreData(entity: entity, insertInto: context)

@@ -30,10 +30,12 @@
 		21719C922A3D2A9D0053166D /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C912A3D2A9D0053166D /* TodoItemTests.swift */; };
 		21719C942A3D2B0A0053166D /* TodoItemJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C932A3D2B0A0053166D /* TodoItemJSONTests.swift */; };
 		21719C962A3D2B940053166D /* TodoItemCSVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21719C952A3D2B940053166D /* TodoItemCSVTests.swift */; };
-		219F5A342A5F65D000AE5B1F /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219F5A332A5F65D000AE5B1F /* FileCache.swift */; };
+		219F5A342A5F65D000AE5B1F /* FileCacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219F5A332A5F65D000AE5B1F /* FileCacheProtocol.swift */; };
 		219F5A3E2A6044F300AE5B1F /* TodoItemCoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 219F5A3C2A6044F300AE5B1F /* TodoItemCoreDataModel.xcdatamodeld */; };
 		219F5A412A60456E00AE5B1F /* TodoItemCoreData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219F5A3F2A60456E00AE5B1F /* TodoItemCoreData+CoreDataClass.swift */; };
 		219F5A422A60456E00AE5B1F /* TodoItemCoreData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219F5A402A60456E00AE5B1F /* TodoItemCoreData+CoreDataProperties.swift */; };
+		219F5A452A6062E400AE5B1F /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 219F5A442A6062E400AE5B1F /* SQLite */; };
+		219F5A472A6062FC00AE5B1F /* FIleCacheSQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219F5A462A6062FC00AE5B1F /* FIleCacheSQLite.swift */; };
 		21B8457B2A410A85007531DB /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 21B8457A2A410A85007531DB /* SnapKit */; settings = {ATTRIBUTES = (Required, ); }; };
 		21C284DB2A44E81C00D08700 /* PriorityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */; };
 		21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */; };
@@ -96,10 +98,11 @@
 		21719C912A3D2A9D0053166D /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		21719C932A3D2B0A0053166D /* TodoItemJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemJSONTests.swift; sourceTree = "<group>"; };
 		21719C952A3D2B940053166D /* TodoItemCSVTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCSVTests.swift; sourceTree = "<group>"; };
-		219F5A332A5F65D000AE5B1F /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
+		219F5A332A5F65D000AE5B1F /* FileCacheProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheProtocol.swift; sourceTree = "<group>"; };
 		219F5A3D2A6044F300AE5B1F /* TodoItemCoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TodoItemCoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		219F5A3F2A60456E00AE5B1F /* TodoItemCoreData+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItemCoreData+CoreDataClass.swift"; sourceTree = "<group>"; };
 		219F5A402A60456E00AE5B1F /* TodoItemCoreData+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItemCoreData+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		219F5A462A6062FC00AE5B1F /* FIleCacheSQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIleCacheSQLite.swift; sourceTree = "<group>"; };
 		21C284DA2A44E81C00D08700 /* PriorityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DC2A44E87000D08700 /* DeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		21C284DE2A44E88200D08700 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				219F5A452A6062E400AE5B1F /* SQLite in Frameworks */,
 				21B8457B2A410A85007531DB /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -168,8 +172,9 @@
 			children = (
 				219F5A3F2A60456E00AE5B1F /* TodoItemCoreData+CoreDataClass.swift */,
 				219F5A402A60456E00AE5B1F /* TodoItemCoreData+CoreDataProperties.swift */,
+				219F5A462A6062FC00AE5B1F /* FIleCacheSQLite.swift */,
 				213EA8442A52208A00B1AEF7 /* FileCacheCoreData.swift */,
-				219F5A332A5F65D000AE5B1F /* FileCache.swift */,
+				219F5A332A5F65D000AE5B1F /* FileCacheProtocol.swift */,
 				219F5A3C2A6044F300AE5B1F /* TodoItemCoreDataModel.xcdatamodeld */,
 			);
 			path = Persistence;
@@ -274,6 +279,7 @@
 			name = TodoList;
 			packageProductDependencies = (
 				21B8457A2A410A85007531DB /* SnapKit */,
+				219F5A442A6062E400AE5B1F /* SQLite */,
 			);
 			productName = TodoList;
 			productReference = 21719C652A3D26850053166D /* TodoList.app */;
@@ -328,6 +334,7 @@
 			mainGroup = 21719C5C2A3D26850053166D;
 			packageReferences = (
 				21B845792A410A85007531DB /* XCRemoteSwiftPackageReference "SnapKit" */,
+				219F5A432A6062E400AE5B1F /* XCRemoteSwiftPackageReference "SQLite" */,
 			);
 			productRefGroup = 21719C662A3D26850053166D /* Products */;
 			projectDirPath = "";
@@ -385,13 +392,14 @@
 				2167AA9F2A5258C7001627B1 /* FooterView.swift in Sources */,
 				2167AA9D2A525199001627B1 /* HeaderView.swift in Sources */,
 				219F5A3E2A6044F300AE5B1F /* TodoItemCoreDataModel.xcdatamodeld in Sources */,
+				219F5A472A6062FC00AE5B1F /* FIleCacheSQLite.swift in Sources */,
 				21DC824E2A574B3900696317 /* NetworkError.swift in Sources */,
 				219F5A422A60456E00AE5B1F /* TodoItemCoreData+CoreDataProperties.swift in Sources */,
 				21C284DD2A44E87000D08700 /* DeadlineTableViewCell.swift in Sources */,
 				21DC824A2A5747DC00696317 /* NetworkingSevice.swift in Sources */,
 				219F5A412A60456E00AE5B1F /* TodoItemCoreData+CoreDataClass.swift in Sources */,
 				21C284DF2A44E88200D08700 /* CalendarTableViewCell.swift in Sources */,
-				219F5A342A5F65D000AE5B1F /* FileCache.swift in Sources */,
+				219F5A342A5F65D000AE5B1F /* FileCacheProtocol.swift in Sources */,
 				21575E0F2A451BE0006D1D4F /* Symbols.swift in Sources */,
 				2167AA9B2A52503D001627B1 /* AddButton.swift in Sources */,
 			);
@@ -671,6 +679,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		219F5A432A6062E400AE5B1F /* XCRemoteSwiftPackageReference "SQLite" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.1;
+			};
+		};
 		21B845792A410A85007531DB /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -682,6 +698,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		219F5A442A6062E400AE5B1F /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 219F5A432A6062E400AE5B1F /* XCRemoteSwiftPackageReference "SQLite" */;
+			productName = SQLite;
+		};
 		21B8457A2A410A85007531DB /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 21B845792A410A85007531DB /* XCRemoteSwiftPackageReference "SnapKit" */;
