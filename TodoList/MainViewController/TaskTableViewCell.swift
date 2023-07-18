@@ -7,15 +7,12 @@
 
 import UIKit
 import SnapKit
-import CocoaLumberjackSwift
-import FileCache
 
 final class TaskTableViewCell: UITableViewCell {
     
     // MARK: - Variables
     static let identifier = "TaskTableViewCell"
     var currentItem: TodoItem!
-    var currentItemIndexPath: IndexPath!
     
     weak var delegate: PassDataBackDelegate?
     
@@ -157,15 +154,14 @@ final class TaskTableViewCell: UITableViewCell {
     // MARK: - Interaction andling
     @objc private func didTapRadioButton() {
         currentItem.isDone.toggle()
-        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .high, hasDeadline: currentItem.deadline != nil)
-        delegate?.changeItemCompleteness(indexPath: currentItemIndexPath)
+        markTaskAsDone(currentItem.isDone, isHighPriority: currentItem.priority == .important, hasDeadline: currentItem.deadline != nil)
+        delegate?.changeItemCompleteness(itemID: currentItem.id)
     }
     
     
     // MARK: - Configuring the cell
     func configureCell(with item: TodoItem, at indexPath: IndexPath) {
         currentItem = item
-        currentItemIndexPath = indexPath
         
         taskLabel.text = item.text
         if let deadline = item.deadline {
@@ -175,7 +171,7 @@ final class TaskTableViewCell: UITableViewCell {
             let dateString = dateFormatter.string(from: deadline)
             deadlineLabel.text = dateString
         }
-        markTaskAsDone(item.isDone, isHighPriority: item.priority == .high, hasDeadline: item.deadline != nil)
+        markTaskAsDone(item.isDone, isHighPriority: item.priority == .important, hasDeadline: item.deadline != nil)
     }
     
     func markTaskAsDone(_ isDone: Bool, isHighPriority: Bool, hasDeadline: Bool) {
@@ -223,7 +219,5 @@ final class TaskTableViewCell: UITableViewCell {
             symbolAndTaskLabelStackView.addArrangedSubview(labelAndDeadlineStackView)
             
         }
-        
-        DDLogInfo("TableViewCell configured")
     }
 }

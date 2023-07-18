@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import FileCache
 
 final class PriorityTableViewCell: UITableViewCell {
     
@@ -79,9 +78,9 @@ final class PriorityTableViewCell: UITableViewCell {
         switch priority {
         case .low:
             segmentedControl.selectedSegmentIndex = 0
-        case .regular:
+        case .basic:
             segmentedControl.selectedSegmentIndex = 1
-        case .high:
+        case .important:
             segmentedControl.selectedSegmentIndex = 2
         }
     }

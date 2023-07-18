@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import FileCache
 
 final class DetailViewController: UIViewController {
     
@@ -19,7 +18,7 @@ final class DetailViewController: UIViewController {
     
     private var id: String?
     private var text: String?
-    private var priority: Priority = .regular
+    private var priority: Priority = .basic
     private var deadline: Date? {
         didSet {
             tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
@@ -236,8 +235,8 @@ final class DetailViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         let item = TodoItem(id: id ?? UUID().uuidString, text: text ?? "", priority: priority, deadline: deadline)
-        if currentItem != nil {
-            delegate?.updateExistingItem(item)
+        if let currentItem = currentItem {
+            delegate?.updateExistingItem(withID: currentItem.id, changeTo: item)
         } else {
             delegate?.createNewItem(item)
         }
@@ -245,8 +244,8 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func didTapRemoveButton() {
-        if currentItem != nil {
-            delegate?.removeExistingItem()
+        if let currentItem = currentItem {
+            delegate?.removeExistingItem(itemID: currentItem.id)
             dismiss(animated: true)
         } else {
             didTapSaveButton()
@@ -386,9 +385,9 @@ extension DetailViewController: DidChangePriorityDelegate {
         case 0:
             priority = .low
         case 1:
-            priority = .regular
+            priority = .basic
         case 2:
-            priority = .high
+            priority = .important
         default:
             break
         }

@@ -38,7 +38,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.high
+        let priority = Priority.important
         let deadlineTimestamp: Double = 1777777777.0
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
@@ -156,7 +156,7 @@ final class ToDoItemCSVTests: XCTestCase {
         let todoItem = TodoItem.parse(csv: validCSV)
         
         XCTAssertNotNil(todoItem)
-        XCTAssertEqual(todoItem?.priority, Priority.regular)
+        XCTAssertEqual(todoItem?.priority, Priority.basic)
         XCTAssertNil(todoItem?.deadline)
         XCTAssertNil(todoItem?.dateModified)
     }
@@ -210,7 +210,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.high
+        let priority = Priority.important
         let deadlineTimestamp: Double = 1777777777.0
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
@@ -236,7 +236,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.regular
+        let priority = Priority.basic
         let deadlineTimestamp: Double = 1777777777.0
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
@@ -262,7 +262,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "foo"
-        let priority = Priority.high
+        let priority = Priority.important
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
         
@@ -284,7 +284,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "foo, \"bazz\", bar"
-        let priority = Priority.regular
+        let priority = Priority.basic
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
         
@@ -307,7 +307,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "\"foo\", bazz, \"bar\","
-        let priority = Priority.regular
+        let priority = Priority.basic
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
         
@@ -330,7 +330,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "\"\"foo\"\", bazz, \"\"bar\"\","
-        let priority = Priority.regular
+        let priority = Priority.basic
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
         
@@ -353,7 +353,7 @@ final class ToDoItemCSVTests: XCTestCase {
         
         let id = "customID"
         let text = "\"foo, bazz, \"bar,"
-        let priority = Priority.regular
+        let priority = Priority.basic
         let isDone = true
         let dateCreatedTimestamp: Double = 1623777600.0
         
