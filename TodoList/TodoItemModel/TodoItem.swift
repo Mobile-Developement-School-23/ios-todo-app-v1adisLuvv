@@ -28,7 +28,7 @@ struct TodoItem {
 }
 
 // we need this conformance to be able to check the equality of two TodoItems
-extension TodoItem: Equatable {}
+extension TodoItem: Equatable, Identifiable {}
 
 enum Priority: String {
     case low
