@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21243B5C2A6B31870062DDB6 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21243B5B2A6B31870062DDB6 /* MainView.swift */; };
 		2128192E2A4B5BB100B9DBF5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */; };
 		212819322A4B71C300B9DBF5 /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */; };
 		213EA8452A52208A00B1AEF7 /* FileCacheCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213EA8442A52208A00B1AEF7 /* FileCacheCoreData.swift */; };
@@ -72,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		21243B5B2A6B31870062DDB6 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		2128192D2A4B5BB100B9DBF5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		212819312A4B71C300B9DBF5 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		213EA8442A52208A00B1AEF7 /* FileCacheCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheCoreData.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 		21719C672A3D26850053166D /* TodoList */ = {
 			isa = PBXGroup;
 			children = (
+				21243B5B2A6B31870062DDB6 /* MainView.swift */,
 				21028CF92A4F5C8500DA0951 /* MainViewController */,
 				21B845882A410E21007531DB /* DetailViewController */,
 				2167AA962A5223A1001627B1 /* TodoItemModel */,
@@ -377,6 +380,7 @@
 				21575E132A4632D2006D1D4F /* DidToggleDeadlineSwitchDelegate.swift in Sources */,
 				21EA1B1C2A4E5179002B9CB5 /* PassDataBackDelegate.swift in Sources */,
 				21575E112A4627E3006D1D4F /* DidChangePriorityDelegate.swift in Sources */,
+				21243B5C2A6B31870062DDB6 /* MainView.swift in Sources */,
 				21719C692A3D26850053166D /* AppDelegate.swift in Sources */,
 				2128192E2A4B5BB100B9DBF5 /* MainViewController.swift in Sources */,
 				213EA8492A5220F800B1AEF7 /* TodoItem+JSON.swift in Sources */,
